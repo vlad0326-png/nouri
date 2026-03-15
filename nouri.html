@@ -412,7 +412,7 @@ function generateInsights(allMeals, goals, allCheckins){
     if(avgSleepEarly-avgSleepLate>=0.5&&earlyDays.filter(d=>allCheckins[d]).length>=3){
       insights.push({id:"sleep_timing",icon:"🌙",color:C.purple,label:"SLEEP PATTERN",title:"Earlier dinners = better sleep",text:`On days you stop eating by 8:30 PM, you rate your sleep ${avgSleepEarly.toFixed(1)} vs ${avgSleepLate.toFixed(1)} on late-eating nights.`});
     }else{
-      insights.push({id:"timing",icon:"🌙",color:C.purple,label:"TIMING PATTERN",title:"Late eating detected",text:`You've eaten after 8:30 PM on ${lateDays.length} days. In Phase 2, this will correlate with Whoop sleep recovery.`});
+      insights.push({id:"timing",icon:"🌙",color:C.purple,label:"TIMING PATTERN",title:"Late eating detected",text:`You've eaten after 8:30 PM on ${lateDays.length} days. In Phase 2, this will correlate with Whoop recovery + HRV data.`});
     }
   }
   // Day-of-week sodium
@@ -846,7 +846,7 @@ function TodayScreen({meals,goals,allMeals,allCheckins,onViewMeal,onMealAdjust,d
           <button onClick={submitCheckin} disabled={!sleep||!energy} style={{width:"100%",padding:"11px",background:sleep&&energy?`linear-gradient(135deg,${C.green},${C.green2})`:"rgba(255,255,255,0.05)",border:`0.5px solid ${sleep&&energy?"transparent":"rgba(255,255,255,0.06)"}`,borderRadius:12,color:sleep&&energy?"#000":C.textVeryDim,fontSize:13,fontWeight:700,cursor:sleep&&energy?"pointer":"default",marginTop:4,letterSpacing:"-0.1px"}}>Log check-in</button>
         </div>
       )}
-      {isToday&&checkinDone&&<div style={{color:C.green,fontSize:12,textAlign:"center",marginBottom:14,fontWeight:600,letterSpacing:"0.2px"}}>✓ Morning check-in logged</div>}
+      {isToday&&checkinDone&&<div style={{color:C.green,fontSize:12,textAlign:"center",marginBottom:14,fontWeight:600,letterSpacing:"0.2px"}}>✓ Check-in logged</div>}
 
       {/* Hero Ring */}
       <HeroRing totals={viewTotals} goals={goals} avgScore={avgScore} meals={viewMeals}/>
@@ -881,7 +881,7 @@ function TodayScreen({meals,goals,allMeals,allCheckins,onViewMeal,onMealAdjust,d
           </div>
           <div style={{color:C.textPrimary,fontSize:13,marginBottom:4}}>{weeklySummary.mealsThisWeek} meals logged · {weeklySummary.avgScore} avg score</div>
           <div style={{color:C.green,fontSize:12,marginBottom:2}}>✓ Nailed your {weeklySummary.topNut} this week</div>
-          <div style={{color:C.amber,fontSize:12}}>{weeklySummary.gapNut} needs more attention</div>
+          <div style={{color:C.amber,fontSize:12}}>Worth adding: {weeklySummary.gapNut}</div>
           {(profile?.current_streak||0)>0&&<div style={{color:C.textDim,fontSize:12,marginTop:4}}>🔥 {profile.current_streak}-day logging streak</div>}
         </div>
       ):insightData?(
@@ -889,7 +889,7 @@ function TodayScreen({meals,goals,allMeals,allCheckins,onViewMeal,onMealAdjust,d
       ):dayCount<7?(
         <div style={{background:"rgba(255,255,255,0.02)",border:"0.5px solid rgba(255,255,255,0.05)",borderRadius:16,padding:"18px 20px",marginBottom:14}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-            <div style={{color:"rgba(255,255,255,0.2)",fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em"}}>YOUR PICTURE</div>
+            <div style={{color:"rgba(255,255,255,0.2)",fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em"}}>BUILDING YOUR PICTURE</div>
             <div style={{color:C.green,fontSize:11,fontWeight:600}}>{Math.max(1,dayCount)}/7 days</div>
           </div>
           <div style={{color:"rgba(255,255,255,0.85)",fontSize:14,fontWeight:600,letterSpacing:"-0.2px",marginBottom:4}}>Insights unlock after 7 days of logging</div>
@@ -957,7 +957,7 @@ function InsightsScreen({allMeals,goals,allCheckins}){
         <>
           {gaps.length>0&&(
             <div style={{background:C.card,border:`0.5px solid ${C.border}`,borderRadius:16,padding:"16px 18px",marginBottom:16}}>
-              <div style={{color:C.red,fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:12}}>CONSISTENT GAPS</div>
+              <div style={{color:C.amber,fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:12}}>NUTRIENTS TO BUILD</div>
               <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
                 {gaps.map(g=>(<div key={g.key} style={{background:`${C.red}22`,border:`0.5px solid ${C.red}44`,borderRadius:12,padding:"3px 10px",color:C.red,fontSize:12,fontWeight:600}}>{LIFE_IMPACT[g.key]?(LIFE_IMPACT[g.key].icon+" "+g.label+" ("+LIFE_IMPACT[g.key].area+")"):g.label} — {g.avgPct}% avg</div>))}
               </div>
@@ -1797,7 +1797,7 @@ function SnapScreen({ profile, onLogMeal, quickAdds, learnedPortions, initialMod
         return c;
       });
       onLogMeal(result);
-    } catch(e) { setError(e?.message || 'Analysis failed. Try again or use search.'); }
+    } catch(e) { setError(e?.message || 'Couldn\'t analyze the photo. Try again or use Search mode.'); }
     finally { setAnalyzing(false); }
   }
 
@@ -1814,7 +1814,7 @@ function SnapScreen({ profile, onLogMeal, quickAdds, learnedPortions, initialMod
         return c;
       });
       onLogMeal(result);
-    } catch(e) { setError(e?.message || 'Search failed. Please try again.'); }
+    } catch(e) { setError(e?.message || 'Couldn\'t complete search. Try again.'); }
     finally { setAnalyzing(false); }
   }
 
@@ -2180,7 +2180,7 @@ function App() {
     setProfile(updatedProfile);
     await storage.set('nouri:profile', updatedProfile);
 
-    showToast('Meal logged!');
+    showToast('Logged.');
     setPendingMeal(null);
     setScreen('main');
     setTab('today');
@@ -2287,7 +2287,7 @@ function App() {
             </svg>
             <div>
               <p style={{color:C.textPrimary,fontSize:22,fontWeight:700,letterSpacing:'-0.5px',margin:0}}>nouri</p>
-              <p style={{color:'rgba(255,255,255,0.2)',fontSize:11,margin:'4px 0 0',letterSpacing:'0.3px'}}>Loading...</p>
+              <p style={{color:'rgba(255,255,255,0.2)',fontSize:11,margin:'4px 0 0',letterSpacing:'0.3px'}}>Starting Nouri…</p>
             </div>
           </>
         ) : (
