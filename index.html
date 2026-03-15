@@ -194,9 +194,60 @@ const NUTRIENT_INFO = {
 const DEFAULT_QUICK_ADDS = [
   {id:"water", label:"Water", emoji:"💧", nutrients:{...Object.fromEntries(Object.keys(DEFAULT_GOALS).map(k=>[k,0]))}},
   {id:"coffee", label:"Coffee", emoji:"☕", nutrients:{...Object.fromEntries(Object.keys(DEFAULT_GOALS).map(k=>[k,0])),calories:5}},
-  {id:"supplements", label:"Supplements", emoji:"💊", nutrients:{...Object.fromEntries(Object.keys(DEFAULT_GOALS).map(k=>[k,0]))}},
   {id:"protein_shake", label:"Protein Shake", emoji:"🥤", nutrients:{...Object.fromEntries(Object.keys(DEFAULT_GOALS).map(k=>[k,0])),calories:180,protein_g:30,carbs_g:8,fat_g:3}},
 ];
+
+// ─── SUPPLEMENT DATABASE ─────────────────────────────────────────────────────
+const zn=()=>Object.fromEntries(Object.keys(DEFAULT_GOALS).map(k=>[k,0]));
+const SUPPLEMENT_DB = [
+  // Multivitamins
+  {id:"multi_men",name:"Men's Multivitamin",category:"Multi",emoji:"💊",nutrients:{...zn(),vitamin_a_mcg:900,vitamin_c_mg:90,vitamin_d_mcg:25,vitamin_e_mg:15,vitamin_k_mcg:120,vitamin_b1_mg:1.2,vitamin_b2_mg:1.3,vitamin_b3_mg:16,vitamin_b5_mg:5,vitamin_b6_mg:1.7,vitamin_b9_mcg:400,vitamin_b12_mcg:2.4,calcium_mg:200,iron_mg:8,magnesium_mg:50,zinc_mg:11,selenium_mcg:55,copper_mg:0.9,manganese_mg:2.3}},
+  {id:"multi_women",name:"Women's Multivitamin",category:"Multi",emoji:"💊",nutrients:{...zn(),vitamin_a_mcg:700,vitamin_c_mg:75,vitamin_d_mcg:20,vitamin_e_mg:15,vitamin_k_mcg:90,vitamin_b1_mg:1.1,vitamin_b2_mg:1.1,vitamin_b3_mg:14,vitamin_b5_mg:5,vitamin_b6_mg:1.3,vitamin_b9_mcg:400,vitamin_b12_mcg:2.4,calcium_mg:500,iron_mg:18,magnesium_mg:50,zinc_mg:8,selenium_mcg:55,copper_mg:0.9,manganese_mg:1.8}},
+  {id:"prenatal",name:"Prenatal Vitamin",category:"Multi",emoji:"🤰",nutrients:{...zn(),vitamin_a_mcg:770,vitamin_c_mg:85,vitamin_d_mcg:15,vitamin_e_mg:15,vitamin_b6_mg:1.9,vitamin_b9_mcg:600,vitamin_b12_mcg:2.6,calcium_mg:200,iron_mg:27,magnesium_mg:50,zinc_mg:11,omega3_mg:200}},
+  // Individual vitamins
+  {id:"vit_d3",name:"Vitamin D3 (2000 IU)",category:"Vitamins",emoji:"☀️",nutrients:{...zn(),vitamin_d_mcg:50}},
+  {id:"vit_d3_5000",name:"Vitamin D3 (5000 IU)",category:"Vitamins",emoji:"☀️",nutrients:{...zn(),vitamin_d_mcg:125}},
+  {id:"vit_c_500",name:"Vitamin C (500mg)",category:"Vitamins",emoji:"🍊",nutrients:{...zn(),vitamin_c_mg:500}},
+  {id:"vit_c_1000",name:"Vitamin C (1000mg)",category:"Vitamins",emoji:"🍊",nutrients:{...zn(),vitamin_c_mg:1000}},
+  {id:"vit_b12",name:"Vitamin B12 (1000mcg)",category:"Vitamins",emoji:"⚡",nutrients:{...zn(),vitamin_b12_mcg:1000}},
+  {id:"vit_b_complex",name:"B-Complex",category:"Vitamins",emoji:"⚡",nutrients:{...zn(),vitamin_b1_mg:25,vitamin_b2_mg:25,vitamin_b3_mg:50,vitamin_b5_mg:25,vitamin_b6_mg:25,vitamin_b9_mcg:400,vitamin_b12_mcg:100}},
+  {id:"vit_k2",name:"Vitamin K2 (100mcg)",category:"Vitamins",emoji:"💚",nutrients:{...zn(),vitamin_k_mcg:100}},
+  {id:"vit_e",name:"Vitamin E (400 IU)",category:"Vitamins",emoji:"🌰",nutrients:{...zn(),vitamin_e_mg:268}},
+  {id:"vit_a",name:"Vitamin A (3000mcg)",category:"Vitamins",emoji:"🥕",nutrients:{...zn(),vitamin_a_mcg:3000}},
+  {id:"folate",name:"Folate / Folic Acid (400mcg)",category:"Vitamins",emoji:"🧬",nutrients:{...zn(),vitamin_b9_mcg:400}},
+  // Minerals
+  {id:"magnesium_glycinate",name:"Magnesium Glycinate (400mg)",category:"Minerals",emoji:"🧲",nutrients:{...zn(),magnesium_mg:400}},
+  {id:"magnesium_citrate",name:"Magnesium Citrate (300mg)",category:"Minerals",emoji:"🧲",nutrients:{...zn(),magnesium_mg:300}},
+  {id:"zinc_30",name:"Zinc (30mg)",category:"Minerals",emoji:"🛡️",nutrients:{...zn(),zinc_mg:30}},
+  {id:"iron_65",name:"Iron (65mg)",category:"Minerals",emoji:"🩸",nutrients:{...zn(),iron_mg:65}},
+  {id:"calcium_600",name:"Calcium (600mg)",category:"Minerals",emoji:"🦴",nutrients:{...zn(),calcium_mg:600}},
+  {id:"calcium_d",name:"Calcium + Vitamin D",category:"Minerals",emoji:"🦴",nutrients:{...zn(),calcium_mg:600,vitamin_d_mcg:25}},
+  {id:"potassium",name:"Potassium (99mg)",category:"Minerals",emoji:"🍌",nutrients:{...zn(),potassium_mg:99}},
+  {id:"selenium",name:"Selenium (200mcg)",category:"Minerals",emoji:"🌾",nutrients:{...zn(),selenium_mcg:200}},
+  {id:"copper",name:"Copper (2mg)",category:"Minerals",emoji:"🔶",nutrients:{...zn(),copper_mg:2}},
+  {id:"chromium",name:"Chromium (200mcg)",category:"Minerals",emoji:"⚙️",nutrients:{...zn()}},
+  // Omega / Fish oil
+  {id:"fish_oil",name:"Fish Oil (1000mg)",category:"Omega",emoji:"🐟",nutrients:{...zn(),omega3_mg:300,fat_g:1,calories:10}},
+  {id:"fish_oil_high",name:"Fish Oil — High Potency",category:"Omega",emoji:"🐟",nutrients:{...zn(),omega3_mg:900,fat_g:1,calories:10}},
+  {id:"algae_omega",name:"Algae Omega-3 (vegan)",category:"Omega",emoji:"🌿",nutrients:{...zn(),omega3_mg:500,fat_g:1,calories:10}},
+  {id:"flaxseed_oil",name:"Flaxseed Oil (1000mg)",category:"Omega",emoji:"🌱",nutrients:{...zn(),omega3_mg:570,omega6_mg:150,fat_g:1,calories:10}},
+  // Protein & Amino
+  {id:"collagen",name:"Collagen Peptides (10g)",category:"Protein",emoji:"✨",nutrients:{...zn(),protein_g:10,calories:40}},
+  {id:"creatine",name:"Creatine Monohydrate (5g)",category:"Protein",emoji:"💪",nutrients:{...zn(),calories:0}},
+  {id:"bcaa",name:"BCAA Powder",category:"Protein",emoji:"💪",nutrients:{...zn(),protein_g:5,calories:20}},
+  // Specialty
+  {id:"probiotic",name:"Probiotic (50B CFU)",category:"Specialty",emoji:"🦠",nutrients:{...zn()}},
+  {id:"fiber",name:"Fiber Supplement (5g)",category:"Specialty",emoji:"🌾",nutrients:{...zn(),fiber_g:5,carbs_g:5,calories:20}},
+  {id:"turmeric",name:"Turmeric / Curcumin",category:"Specialty",emoji:"🟡",nutrients:{...zn()}},
+  {id:"ashwagandha",name:"Ashwagandha (600mg)",category:"Specialty",emoji:"🌿",nutrients:{...zn()}},
+  {id:"melatonin",name:"Melatonin (5mg)",category:"Specialty",emoji:"🌙",nutrients:{...zn()}},
+  {id:"coq10",name:"CoQ10 (100mg)",category:"Specialty",emoji:"❤️",nutrients:{...zn()}},
+  {id:"elderberry",name:"Elderberry",category:"Specialty",emoji:"🫐",nutrients:{...zn(),vitamin_c_mg:90}},
+  {id:"biotin",name:"Biotin (5000mcg)",category:"Specialty",emoji:"💅",nutrients:{...zn()}},
+  {id:"apple_cider_vin",name:"Apple Cider Vinegar Gummies",category:"Specialty",emoji:"🍎",nutrients:{...zn(),calories:15,sugar_g:3,carbs_g:4}},
+  {id:"electrolytes",name:"Electrolyte Packet",category:"Specialty",emoji:"⚡",nutrients:{...zn(),sodium_mg:1000,potassium_mg:200,magnesium_mg:60,calories:10}},
+];
+const SUPPLEMENT_CATEGORIES = [...new Set(SUPPLEMENT_DB.map(s=>s.category))];
 
 function normalizeQuickAdd(qa) {
   const base = Object.fromEntries(Object.keys(DEFAULT_GOALS).map(k=>[k,0]));
@@ -604,10 +655,12 @@ function MealEntry({meal,onTap,goals,index=0}){
   const mealImageSrc=toImageSrc(meal.photo_data);
   return(
     <div onClick={isInteractive?onTap:undefined} style={{display:"flex",alignItems:"center",gap:14,padding:"14px 0",borderBottom:"0.5px solid rgba(255,255,255,0.05)",cursor:isInteractive?"pointer":"default",animation:`fadeIn 0.35s cubic-bezier(0.25,0.1,0.25,1) ${index*0.08}s both`}}>
-      <div style={{width:64,height:64,borderRadius:12,overflow:"hidden",flexShrink:0,border:"0.5px solid rgba(255,255,255,0.08)",background:C.bgCard}}>
+      <div style={{width:64,height:64,borderRadius:12,overflow:"hidden",flexShrink:0,border:`0.5px solid ${meal.source==='supplement'?C.purple+'33':'rgba(255,255,255,0.08)'}`,background:meal.source==='supplement'?C.purpleDim:C.bgCard}}>
         {mealImageSrc
           ? <img src={mealImageSrc} style={{width:"100%",height:"100%",objectFit:"cover"}} alt=""/>
-          : <div style={{width:"100%",height:"100%",background:"linear-gradient(135deg,rgba(255,255,255,0.05) 0%,rgba(255,255,255,0.02) 100%)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+          : meal.source==='supplement'
+            ? <div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28}}>💊</div>
+            : <div style={{width:"100%",height:"100%",background:"linear-gradient(135deg,rgba(255,255,255,0.05) 0%,rgba(255,255,255,0.02) 100%)",display:"flex",alignItems:"center",justifyContent:"center"}}>
               <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
                 <circle cx="9" cy="6.5" r="3" stroke="rgba(255,255,255,0.18)" strokeWidth="1.5"/>
                 <path d="M2.5 16c0-3.59 2.91-6.5 6.5-6.5s6.5 2.91 6.5 6.5" stroke="rgba(255,255,255,0.1)" strokeWidth="1.5" strokeLinecap="round"/>
@@ -617,7 +670,9 @@ function MealEntry({meal,onTap,goals,index=0}){
       </div>
       <div style={{flex:1,minWidth:0}}>
         <div style={{color:C.textPrimary,fontSize:15,fontWeight:600,letterSpacing:"-0.02em",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{meal.meal_name}</div>
-        <div style={{color:C.textDim,fontSize:12,marginTop:4}}>{time} · {Math.round(meal.meal_totals?.calories||0)} cal · {Math.round(meal.meal_totals?.protein_g||0)}g protein</div>
+        <div style={{color:C.textDim,fontSize:12,marginTop:4}}>{time} · {meal.source==='supplement'
+          ? (meal.components?.length||0)+' supplement'+(meal.components?.length>1?'s':'')
+          : `${Math.round(meal.meal_totals?.calories||0)} cal · ${Math.round(meal.meal_totals?.protein_g||0)}g protein`}</div>
       </div>
       <div style={{display:"flex",alignItems:"center",gap:8,flexShrink:0}}>
         <div style={{background:`${sl.color}15`,padding:"3px 8px",borderRadius:6,display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
@@ -1656,6 +1711,156 @@ function FoodDetailScreen({analysis,sourceImage,onLog,onBack,onRetakePhoto,onMan
 }
 
 // ── SnapScreen ──────────────────────────────────────────────────────────────
+// ─── SUPPLEMENT PICKER ──────────────────────────────────────────────────────
+function SupplementPicker({ onLog, onClose }) {
+  const [search, setSearch] = useState('');
+  const [selected, setSelected] = useState([]);
+  const [activeCategory, setActiveCategory] = useState(null);
+
+  const filtered = useMemo(() => {
+    let list = SUPPLEMENT_DB;
+    if (activeCategory) list = list.filter(s => s.category === activeCategory);
+    if (search.trim()) {
+      const q = search.toLowerCase();
+      list = list.filter(s => s.name.toLowerCase().includes(q) || s.category.toLowerCase().includes(q));
+    }
+    return list;
+  }, [search, activeCategory]);
+
+  const toggleSupplement = (supp) => {
+    setSelected(prev => {
+      const exists = prev.find(s => s.id === supp.id);
+      if (exists) return prev.filter(s => s.id !== supp.id);
+      return [...prev, { ...supp, qty: 1 }];
+    });
+  };
+
+  const updateQty = (id, delta) => {
+    setSelected(prev => prev.map(s => s.id === id ? { ...s, qty: Math.max(1, Math.min(5, s.qty + delta)) } : s));
+  };
+
+  const logSelected = () => {
+    if (!selected.length) return;
+    const components = selected.map(s => ({
+      name: s.name,
+      _mult: s.qty,
+      category: 'supplement',
+      confidence: 'verified',
+      nutrients: Object.fromEntries(Object.entries(s.nutrients).map(([k, v]) => [k, v * s.qty])),
+    }));
+    const totals = {};
+    Object.keys(DEFAULT_GOALS).forEach(k => { totals[k] = components.reduce((sum, c) => sum + (c.nutrients[k] || 0), 0); });
+    const names = selected.map(s => s.qty > 1 ? `${s.name} ×${s.qty}` : s.name);
+    const meal = {
+      id: Date.now().toString(),
+      timestamp: new Date().toISOString(),
+      meal_name: names.length === 1 ? names[0] : `${names.length} supplements`,
+      source: 'supplement',
+      confidence: 1.0,
+      hand_detected: false,
+      photo_data: null,
+      components,
+      meal_totals: totals,
+    };
+    onLog(meal, true);
+  };
+
+  const isSelected = (id) => selected.find(s => s.id === id);
+
+  return (
+    <div style={{position:'fixed',inset:0,background:C.bg,zIndex:500,display:'flex',flexDirection:'column',animation:'slideUp 0.3s ease'}}>
+      {/* Header */}
+      <div style={{padding:'16px 20px 12px',display:'flex',alignItems:'center',justifyContent:'space-between',borderBottom:`0.5px solid ${C.border}`}}>
+        <button onClick={onClose} style={{background:'none',border:'none',color:C.textDim,fontSize:15,cursor:'pointer',padding:8,touchAction:'manipulation'}}>Cancel</button>
+        <div style={{color:C.textPrimary,fontSize:16,fontWeight:700}}>Log Supplements</div>
+        <button onClick={logSelected} disabled={!selected.length}
+          style={{background:'none',border:'none',color:selected.length?C.green:C.textDisabled,fontSize:15,fontWeight:600,cursor:selected.length?'pointer':'default',padding:8,touchAction:'manipulation'}}>
+          Log{selected.length ? ` (${selected.length})` : ''}
+        </button>
+      </div>
+
+      {/* Search */}
+      <div style={{padding:'12px 20px 8px'}}>
+        <input value={search} onChange={e=>setSearch(e.target.value)}
+          placeholder="Search supplements..."
+          style={{width:'100%',background:C.bgInput,border:`1px solid ${C.borderLight}`,borderRadius:12,color:'#fff',padding:'12px 16px',fontSize:15,outline:'none'}}/>
+      </div>
+
+      {/* Category pills */}
+      <div style={{padding:'4px 20px 12px',display:'flex',gap:8,overflowX:'auto',WebkitOverflowScrolling:'touch'}}>
+        <button onClick={()=>setActiveCategory(null)}
+          style={{padding:'6px 14px',borderRadius:20,background:!activeCategory?C.green:'rgba(255,255,255,0.05)',
+            border:`0.5px solid ${!activeCategory?'transparent':C.border}`,color:!activeCategory?'#000':C.textDim,
+            fontSize:13,fontWeight:600,cursor:'pointer',whiteSpace:'nowrap',flexShrink:0,touchAction:'manipulation'}}>All</button>
+        {SUPPLEMENT_CATEGORIES.map(cat=>(
+          <button key={cat} onClick={()=>setActiveCategory(activeCategory===cat?null:cat)}
+            style={{padding:'6px 14px',borderRadius:20,background:activeCategory===cat?C.green:'rgba(255,255,255,0.05)',
+              border:`0.5px solid ${activeCategory===cat?'transparent':C.border}`,color:activeCategory===cat?'#000':C.textDim,
+              fontSize:13,fontWeight:600,cursor:'pointer',whiteSpace:'nowrap',flexShrink:0,touchAction:'manipulation'}}>{cat}</button>
+        ))}
+      </div>
+
+      {/* Supplement list */}
+      <div style={{flex:1,overflowY:'auto',padding:'0 20px',paddingBottom:'max(140px, calc(110px + env(safe-area-inset-bottom)))'}}>
+        {filtered.map((supp, i) => {
+          const sel = isSelected(supp.id);
+          const topNutrients = Object.entries(supp.nutrients).filter(([k,v])=>v>0&&k!=='calories').slice(0,3).map(([k,v])=>`${NUTRIENT_LABELS[k]||k}: ${v}${k.includes('mcg')?'mcg':k.includes('_mg')?'mg':'g'}`);
+          return (
+            <div key={supp.id} onClick={()=>toggleSupplement(supp)}
+              style={{display:'flex',alignItems:'center',gap:14,padding:'14px 0',borderBottom:`0.5px solid ${C.divider}`,cursor:'pointer',
+                animation:`fadeIn 0.3s cubic-bezier(0.25,0.1,0.25,1) ${Math.min(i*0.03,0.3)}s both`}}>
+              <div style={{width:44,height:44,borderRadius:12,background:sel?C.greenDim:'rgba(255,255,255,0.04)',
+                display:'flex',alignItems:'center',justifyContent:'center',fontSize:20,flexShrink:0,
+                border:sel?`1.5px solid ${C.green}`:`0.5px solid ${C.border}`,transition:'all 0.15s ease'}}>
+                {sel ? '✓' : supp.emoji}
+              </div>
+              <div style={{flex:1,minWidth:0}}>
+                <div style={{color:sel?C.textPrimary:C.textSecondary,fontSize:14,fontWeight:600,letterSpacing:'-0.02em'}}>{supp.name}</div>
+                <div style={{color:C.textDim,fontSize:11,marginTop:3,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>
+                  {topNutrients.length ? topNutrients.join(' · ') : supp.category}
+                </div>
+              </div>
+              {sel && (
+                <div style={{display:'flex',alignItems:'center',gap:6,flexShrink:0}} onClick={e=>e.stopPropagation()}>
+                  <button onClick={()=>updateQty(supp.id,-1)} style={{width:32,height:32,borderRadius:8,background:'rgba(255,255,255,0.06)',border:'none',color:C.textDim,fontSize:16,cursor:'pointer',touchAction:'manipulation'}}>−</button>
+                  <span style={{color:C.textPrimary,fontSize:14,fontWeight:600,minWidth:20,textAlign:'center',fontVariantNumeric:'tabular-nums'}}>{sel.qty}</span>
+                  <button onClick={()=>updateQty(supp.id,1)} style={{width:32,height:32,borderRadius:8,background:'rgba(255,255,255,0.06)',border:'none',color:C.textDim,fontSize:16,cursor:'pointer',touchAction:'manipulation'}}>+</button>
+                </div>
+              )}
+            </div>
+          );
+        })}
+        {filtered.length===0 && (
+          <div style={{textAlign:'center',padding:'40px 20px',color:C.textDim}}>
+            <div style={{fontSize:32,marginBottom:12}}>💊</div>
+            <div style={{fontSize:14,fontWeight:500}}>No supplements found</div>
+            <div style={{fontSize:12,marginTop:6,color:C.textVeryDim}}>Try a different search term</div>
+          </div>
+        )}
+      </div>
+
+      {/* Selected summary bar */}
+      {selected.length > 0 && (
+        <div style={{position:'fixed',bottom:0,left:0,right:0,padding:'12px 20px',paddingBottom:'calc(12px + env(safe-area-inset-bottom))',
+          background:'linear-gradient(to top, rgba(0,0,0,0.98) 50%, transparent)',zIndex:501}}>
+          <div style={{display:'flex',flexWrap:'wrap',gap:6,marginBottom:10}}>
+            {selected.map(s=>(
+              <span key={s.id} style={{background:C.greenDim,border:`0.5px solid ${C.green}33`,borderRadius:8,padding:'4px 10px',fontSize:12,color:C.green,fontWeight:500}}>
+                {s.emoji} {s.name}{s.qty>1?` ×${s.qty}`:''}
+              </span>
+            ))}
+          </div>
+          <button onClick={logSelected}
+            style={{width:'100%',padding:'15px',background:`linear-gradient(150deg,${C.green},${C.green2})`,border:'none',borderRadius:14,
+              color:'#fff',fontSize:15,fontWeight:700,cursor:'pointer',boxShadow:'0 4px 20px rgba(62,207,142,0.3)',touchAction:'manipulation'}}>
+            Log {selected.length} supplement{selected.length>1?'s':''}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function SnapScreen({ profile, onLogMeal, quickAdds, learnedPortions, initialMode }) {
   const [mode, setMode] = React.useState(initialMode || 'camera'); // camera | search | barcode
   const [stream, setStream] = React.useState(null);
@@ -1665,6 +1870,7 @@ function SnapScreen({ profile, onLogMeal, quickAdds, learnedPortions, initialMod
   const [searchText, setSearchText] = React.useState('');
   const [barcodeInput, setBarcodeInput] = React.useState('');
   const [error, setError] = React.useState('');
+  const [showSupplementPicker, setShowSupplementPicker] = React.useState(false);
   const videoRef = React.useRef(null);
   const canvasRef = React.useRef(null);
   const barcodeDetectorRef = React.useRef(null);
@@ -1952,10 +2158,15 @@ function SnapScreen({ profile, onLogMeal, quickAdds, learnedPortions, initialMod
               {quickAdds.map((qa,i) => (
                 <button key={i} onClick={()=>tapQuickAdd(qa)}
                   style={{display:'flex',alignItems:'center',gap:6,padding:'8px 14px',background:'rgba(255,255,255,0.04)',
-                    border:'0.5px solid rgba(255,255,255,0.08)',borderRadius:20,color:'rgba(255,255,255,0.75)',fontSize:13,cursor:'pointer'}}>
+                    border:'0.5px solid rgba(255,255,255,0.08)',borderRadius:20,color:'rgba(255,255,255,0.75)',fontSize:13,cursor:'pointer',touchAction:'manipulation'}}>
                   <span>{qa.emoji}</span><span>{qa.label || qa.name}</span>
                 </button>
               ))}
+              <button onClick={()=>setShowSupplementPicker(true)}
+                style={{display:'flex',alignItems:'center',gap:6,padding:'8px 14px',background:C.purpleDim,
+                  border:`0.5px solid ${C.purple}44`,borderRadius:20,color:C.purple,fontSize:13,fontWeight:600,cursor:'pointer',touchAction:'manipulation'}}>
+                <span>💊</span><span>Supplements</span>
+              </button>
             </div>
           </div>
         </div>
@@ -2017,6 +2228,7 @@ function SnapScreen({ profile, onLogMeal, quickAdds, learnedPortions, initialMod
           )}
         </div>
       )}
+      {showSupplementPicker && <SupplementPicker onLog={(meal,skip)=>{setShowSupplementPicker(false);onLogMeal(meal,skip);}} onClose={()=>setShowSupplementPicker(false)}/>}
     </div>
   );
 }
