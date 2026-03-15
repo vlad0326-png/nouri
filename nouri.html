@@ -326,7 +326,7 @@ async function analyzeFood({imageBase64,text,palmWidth,palmLength}){
     content.push({type:"text",text:`Analyze this food: ${text}. Estimate standard serving unless amount specified.`});
   }
   const res=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json","anthropic-version":"2023-06-01","x-api-key":apiKey,"anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:MODEL,max_tokens:4096,system:FOOD_SYSTEM,messages:[{role:"user",content}]})});
-  if(!res.ok)throw new Error(res.status===401?"Invalid or missing API key. Check Me → AI Connection.":"API error "+res.status);
+  if(!res.ok)throw new Error(res.status===401?"Invalid or missing API key. Check Me → AI Connection.":res.status===429?"Rate limited — please wait a moment and try again.":"API error "+res.status);
   const data=await res.json();
   const rawText=data?.content?.[0]?.text;
   if(!rawText||typeof rawText!=="string")throw new Error("Could not parse AI response — please try again");
@@ -1813,7 +1813,7 @@ function SnapScreen({ profile, onLogMeal, quickAdds, learnedPortions, initialMod
       if (!result) { setError('Product not found. Try searching manually.'); setAnalyzing(false); return; }
       result.source = 'barcode';
       onLogMeal(result);
-    } catch(e) { setError('Barcode not found. Try searching manually.'); }
+    } catch(e) { setError(e?.message || 'Barcode not found. Try searching manually.'); }
     finally { setAnalyzing(false); }
   }
   const analyzeBarcode = () => analyzeBarcodeCode();
@@ -2042,33 +2042,32 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // Load all data on mount
-  React.useEffect(() => {
-    async function init() {
-      let profileData = null;
-      setInitError(null);
-      try {
-        const [p, meals, checkins, learned, qa] = await Promise.all([
-          storage.get('nouri:profile'),
-          storage.get('nouri:meals'),
-          storage.get('nouri:checkins'),
-          storage.get('nouri:learned-portions'),
-          storage.get('nouri:quick-adds'),
-        ]);
-        profileData = p;
-        if (p) setProfile(p);
-        if (meals) setAllMeals(meals);
-        if (checkins) setAllCheckins(checkins);
-        if (learned) setLearnedPortions(learned);
-        if (Array.isArray(qa)) setQuickAdds(qa.map(normalizeQuickAdd));
-        setScreen(profileData && profileData.onboarded ? 'main' : 'onboard');
-      } catch(e) {
-        setInitError(String(e));
-        setScreen('loading');
-      }
+  const runInit = React.useCallback(async () => {
+    let profileData = null;
+    setInitError(null);
+    try {
+      const [p, meals, checkins, learned, qa] = await Promise.all([
+        storage.get('nouri:profile'),
+        storage.get('nouri:meals'),
+        storage.get('nouri:checkins'),
+        storage.get('nouri:learned-portions'),
+        storage.get('nouri:quick-adds'),
+      ]);
+      profileData = p;
+      if (p) setProfile(p);
+      if (meals) setAllMeals(meals);
+      if (checkins) setAllCheckins(checkins);
+      if (learned) setLearnedPortions(learned);
+      if (Array.isArray(qa)) setQuickAdds(qa.map(normalizeQuickAdd));
+      setScreen(profileData && profileData.onboarded ? 'main' : 'onboard');
+    } catch(e) {
+      setInitError(String(e));
+      setScreen('loading');
     }
-    init();
   }, []);
+
+  // Load all data on mount
+  React.useEffect(() => { runInit(); }, []);
 
   function showToast(msg) {
     setToast(msg);
@@ -2286,7 +2285,7 @@ function App() {
               <p style={{color:'#FFFFFF',fontSize:22,fontWeight:700,letterSpacing:'-0.5px',margin:0}}>nouri</p>
               <p style={{color:'rgba(255,100,100,0.9)',fontSize:13,margin:'12px 0 0',lineHeight:1.5,maxWidth:280,textAlign:'center'}}>{initError}</p>
             </div>
-            <button onClick={async()=>{setInitError(null);let profileData=null;try{const[p,meals,checkins,learned,qa]=await Promise.all([storage.get('nouri:profile'),storage.get('nouri:meals'),storage.get('nouri:checkins'),storage.get('nouri:learned-portions'),storage.get('nouri:quick-adds')]);profileData=p;if(p)setProfile(p);if(meals)setAllMeals(meals);if(checkins)setAllCheckins(checkins);if(learned)setLearnedPortions(learned);if(Array.isArray(qa))setQuickAdds(qa.map(normalizeQuickAdd));setScreen(profileData&&profileData.onboarded?'main':'onboard');}catch(e){setInitError(String(e));}} style={{marginTop:8,padding:'12px 24px',background:'#3ECF8E',border:'none',borderRadius:12,color:'#000',fontSize:14,fontWeight:600,cursor:'pointer'}}>Try again</button>
+            <button onClick={runInit} style={{marginTop:8,padding:'12px 24px',background:'linear-gradient(135deg,#3ECF8E,#2BA874)',border:'none',borderRadius:12,color:'#000',fontSize:14,fontWeight:600,cursor:'pointer',touchAction:'manipulation'}}>Try again</button>
           </>
         )}
       </div>
