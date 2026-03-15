@@ -653,7 +653,7 @@ function MilestoneToast({milestone, onDismiss}) {
 function BottomNav({active,onNav}){
   const tabs=[{id:"today",label:"Today",icon:Icon.today},{id:"insights",label:"Insights",icon:Icon.insights},{id:"snap",label:"",icon:null},{id:"history",label:"History",icon:Icon.history},{id:"me",label:"Me",icon:Icon.me}];
   return(
-    <div style={{position:"fixed",bottom:0,left:0,right:0,height:88,background:"linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.95) 30%)",display:"flex",alignItems:"flex-end",justifyContent:"space-around",paddingBottom:"max(20px, env(safe-area-inset-bottom))",zIndex:100,pointerEvents:"none"}}>
+    <div style={{position:"fixed",bottom:0,left:0,right:0,height:88,background:"linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.97) 25%, rgba(0,0,0,0.99) 100%)",display:"flex",alignItems:"flex-end",justifyContent:"space-around",paddingBottom:"max(20px, env(safe-area-inset-bottom))",zIndex:100,pointerEvents:"none"}}>
       {tabs.map(tab=>{
         if(tab.id==="snap")return(<button key="snap" onClick={()=>onNav("snap")} style={{width:56,height:56,borderRadius:28,background:"linear-gradient(135deg, #3ECF8E, #2BA874)",boxShadow:"0 4px 20px rgba(62,207,142,0.25)",border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",color:"#000",marginBottom:32,flexShrink:0,pointerEvents:"auto",transition:"all 0.2s ease"}}><Icon.plus/></button>);
         const isActive=active===tab.id;
@@ -715,7 +715,7 @@ function HeroRing({totals, goals, avgScore, meals}) {
             </g>);
           })}
         </svg>
-        <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:2,animation:"breathe 3s ease-in-out infinite"}}>
+        <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:2,animation:"breathe 3s ease-in-out infinite",zIndex:1}}>
           <div style={{fontSize:42,fontWeight:700,color:C.textPrimary,letterSpacing:"-2px",lineHeight:1,animation:"countUp 0.4s ease"}}>
             {noMeals ? "—" : <AnimatedNumber value={avgScore||0} decimals={1} duration={1800} punchy={true}/>}
           </div>
@@ -806,8 +806,9 @@ function TodayScreen({meals,goals,allMeals,allCheckins,onViewMeal,onMealAdjust,d
     setCheckinDone(true);
   };
 
+  const contentBottomPadding = "max(128px, calc(100px + env(safe-area-inset-bottom)))";
   return(
-    <div style={{padding:"64px 24px 110px",overflowY:"auto",height:"100dvh"}}>
+    <div style={{padding:`64px 24px ${contentBottomPadding}`,overflowY:"auto",height:"100dvh"}}>
       {/* Header with date navigation */}
       <div style={{marginBottom:24,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
@@ -936,8 +937,9 @@ function TodayScreen({meals,goals,allMeals,allCheckins,onViewMeal,onMealAdjust,d
 function InsightsScreen({allMeals,goals,allCheckins}){
   const dates=Object.keys(allMeals).sort();
   const {insights,gaps,weeklyRhythm}=useMemo(()=>dates.length>=7?generateInsights(allMeals,goals,allCheckins):{insights:[],gaps:[],weeklyRhythm:[]},[allMeals,goals,allCheckins,dates.length]);
+  const contentBottomPadding = "max(128px, calc(100px + env(safe-area-inset-bottom)))";
   return(
-    <div style={{padding:"56px 24px 100px",overflowY:"auto",height:"100dvh"}}>
+    <div style={{padding:`56px 24px ${contentBottomPadding}`,overflowY:"auto",height:"100dvh"}}>
       <div style={{marginBottom:24}}>
         <div style={{color:"rgba(255,255,255,0.25)",fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em"}}>Your</div>
         <div style={{color:C.textPrimary,fontSize:28,fontWeight:700,marginTop:3,letterSpacing:"-0.5px"}}>Insights</div>
@@ -1008,8 +1010,9 @@ function HistoryScreen({allMeals,goals,onViewMeal}){
   const monthNames=["January","February","March","April","May","June","July","August","September","October","November","December"];
   const displayDates=selectedDate?[selectedDate]:dates;
 
+  const contentBottomPadding = "max(128px, calc(100px + env(safe-area-inset-bottom)))";
   return(
-    <div style={{padding:"56px 24px 100px",overflowY:"auto",height:"100dvh"}}>
+    <div style={{padding:`56px 24px ${contentBottomPadding}`,overflowY:"auto",height:"100dvh"}}>
       <div style={{marginBottom:20}}>
         <div style={{color:C.textVeryDim,fontSize:11,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em"}}>Your</div>
         <div style={{color:C.textPrimary,fontSize:22,fontWeight:700,marginTop:4}}>History</div>
@@ -1131,8 +1134,9 @@ function MeScreen({profile,goals,quickAdds,onSave,onRecalibrate,onSaveQuickAdds}
     const blob=new Blob([csv],{type:"text/csv"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="nouri-export.csv";a.click();URL.revokeObjectURL(url);
   };
 
+  const contentBottomPadding = "max(140px, calc(110px + env(safe-area-inset-bottom)))";
   return(
-    <div style={{padding:"56px 24px 130px",overflowY:"auto",height:"100dvh"}}>
+    <div style={{padding:`56px 24px ${contentBottomPadding}`,overflowY:"auto",height:"100dvh"}}>
       <div style={{background:"linear-gradient(135deg, rgba(62,207,142,0.06), transparent)",border:`1px solid rgba(62,207,142,0.12)`,borderRadius:16,padding:20,marginBottom:24,display:"flex",alignItems:"center",gap:16}}>
         <div style={{width:64,height:64,borderRadius:16,background:C.greenDim,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
           <span style={{fontSize:28,fontWeight:700,color:C.green}}>N</span>
@@ -1491,10 +1495,11 @@ function FoodDetailScreen({analysis,sourceImage,onLog,onBack,onRetakePhoto,onMan
   const topMicroKeys=useMemo(()=>new Set(topMicros.map(m=>m.key)),[topMicros]);
   const cumulativePct=(k)=>pct((totals[k]||0)+(todayTotals?.[k]||0),goals?.[k]||DEFAULT_GOALS[k]);
 
+  const detailBottomPadding = "calc(100px + env(safe-area-inset-bottom))";
   return(
-    <div style={{minHeight:"100dvh",background:C.bg,paddingBottom:90}}>
+    <div style={{minHeight:"100dvh",background:C.bg,paddingBottom:detailBottomPadding}}>
       {/* Fixed bottom log button */}
-      <div style={{position:"fixed",bottom:0,left:0,right:0,padding:"12px 20px",paddingBottom:"calc(12px + env(safe-area-inset-bottom))",background:"linear-gradient(to top,rgba(0,0,0,0.95) 70%,transparent)",zIndex:300,maxWidth:430,margin:"0 auto"}}>
+      <div style={{position:"fixed",bottom:0,left:0,right:0,padding:"12px 20px",paddingBottom:"calc(12px + env(safe-area-inset-bottom))",background:"linear-gradient(to top,rgba(0,0,0,0.98) 50%,transparent)",zIndex:300,maxWidth:430,margin:"0 auto"}}>
         <button onClick={()=>onLog(components,totals,true)} style={{width:"100%",padding:"16px",background:`linear-gradient(150deg,${C.green},${C.green2})`,border:"none",borderRadius:14,color:"#fff",fontSize:16,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 20px rgba(62,207,142,0.3)",touchAction:"manipulation"}}>Log this meal</button>
       </div>
       {/* Photo */}
@@ -1884,17 +1889,17 @@ function SnapScreen({ profile, onLogMeal, quickAdds, learnedPortions, initialMod
               <canvas ref={canvasRef} style={{display:'none'}}/>
               {/* Cinematic overlay */}
               <div style={{position:'absolute',inset:0,pointerEvents:'none'}}>
-                {/* Corner brackets */}
-                <div style={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-55%)',width:280,height:280,borderRadius:24}}>
+                {/* Corner brackets + scan line (behind text) */}
+                <div style={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-55%)',width:280,height:280,borderRadius:24,zIndex:0}}>
                   <div style={{position:'absolute',top:0,left:0,width:40,height:40,borderTop:'3px solid #3ECF8E',borderLeft:'3px solid #3ECF8E',borderRadius:'24px 0 0 0'}}/>
                   <div style={{position:'absolute',top:0,right:0,width:40,height:40,borderTop:'3px solid #3ECF8E',borderRight:'3px solid #3ECF8E',borderRadius:'0 24px 0 0'}}/>
                   <div style={{position:'absolute',bottom:0,left:0,width:40,height:40,borderBottom:'3px solid #3ECF8E',borderLeft:'3px solid #3ECF8E',borderRadius:'0 0 0 24px'}}/>
                   <div style={{position:'absolute',bottom:0,right:0,width:40,height:40,borderBottom:'3px solid #3ECF8E',borderRight:'3px solid #3ECF8E',borderRadius:'0 0 24px 0'}}/>
                   <div style={{position:'absolute',left:'10%',right:'10%',top:'50%',height:2,background:'linear-gradient(90deg, transparent, #3ECF8E, transparent)',boxShadow:'0 0 20px #3ECF8E',animation:'scanLine 2s ease-in-out infinite',opacity:0.7}}/>
-                  <div style={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-80%)',color:'rgba(255,255,255,0.45)',fontSize:13,fontWeight:500,textAlign:'center',whiteSpace:'nowrap'}}>Point at your meal</div>
                 </div>
-                <div style={{position:'absolute',bottom:116,left:0,right:0,textAlign:'center',color:'rgba(255,255,255,0.22)',fontSize:11}}>AI identifies food and estimates portions</div>
-                {profile?.hand_calibrated&&<div style={{position:'absolute',top:20,left:'50%',transform:'translateX(-50%)',background:'rgba(0,0,0,0.55)',backdropFilter:'blur(8px)',borderRadius:20,padding:'5px 14px',color:'rgba(255,255,255,0.4)',fontSize:11,whiteSpace:'nowrap'}}>Tip: rest your hand near the plate</div>}
+                <div style={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-80%)',color:'rgba(255,255,255,0.45)',fontSize:13,fontWeight:500,textAlign:'center',whiteSpace:'nowrap',zIndex:2}}>Point at your meal</div>
+                <div style={{position:'absolute',bottom:116,left:0,right:0,textAlign:'center',color:'rgba(255,255,255,0.22)',fontSize:11,zIndex:2}}>AI identifies food and estimates portions</div>
+                {profile?.hand_calibrated&&<div style={{position:'absolute',top:20,left:'50%',transform:'translateX(-50%)',background:'rgba(0,0,0,0.55)',backdropFilter:'blur(8px)',borderRadius:20,padding:'5px 14px',color:'rgba(255,255,255,0.4)',fontSize:11,whiteSpace:'nowrap',zIndex:2}}>Tip: rest your hand near the plate</div>}
               </div>
               {/* Shutter + Gallery */}
               <input ref={fileInputRef} type="file" accept="image/*" style={{display:'none'}} onChange={handleGallerySelect}/>
@@ -1928,7 +1933,7 @@ function SnapScreen({ profile, onLogMeal, quickAdds, learnedPortions, initialMod
 
       {/* Search mode */}
       {mode==='search' && (
-        <div style={{flex:1,display:'flex',flexDirection:'column',padding:"20px",gap:14,background:"#000000"}}>
+        <div style={{flex:1,display:'flex',flexDirection:'column',padding:"20px",paddingBottom:"max(120px, calc(100px + env(safe-area-inset-bottom)))",gap:14,background:"#000000",overflowY:'auto'}}>
           <textarea
             value={searchText} onChange={e=>setSearchText(e.target.value)}
             placeholder="Describe your meal — e.g. grilled chicken with broccoli and rice"
