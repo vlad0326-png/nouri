@@ -27,6 +27,16 @@
     @keyframes scaleIn{from{opacity:0;transform:scale(0.97);}to{opacity:1;transform:scale(1);}}
     @keyframes slideUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
     @keyframes countUp{from{opacity:0;transform:scale(0.92);}to{opacity:1;transform:scale(1);}}
+    @keyframes slideDown{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes fadeInScale{from{opacity:0;transform:scale(0.95);}to{opacity:1;transform:scale(1);}}
+    @keyframes glow{0%,100%{filter:drop-shadow(0 0 8px rgba(62,207,142,0.4));}50%{filter:drop-shadow(0 0 20px rgba(62,207,142,0.7));}}
+    @keyframes breathe{0%,100%{transform:scale(1);opacity:0.6;}50%{transform:scale(1.02);opacity:1;}}
+    @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+    @keyframes ripple{0%{transform:scale(0);opacity:1;}100%{transform:scale(4);opacity:0;}}
+    @keyframes successPop{0%{transform:scale(0.8);opacity:0;}50%{transform:scale(1.1);}100%{transform:scale(1);opacity:1;}}
+    @keyframes gradientShift{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+    @keyframes borderGlow{0%,100%{border-color:rgba(62,207,142,0.2);}50%{border-color:rgba(62,207,142,0.5);}}
+    @keyframes progressFill{from{transform:scaleX(0);}to{transform:scaleX(1);}}
     button:active{transform:scale(0.97);transition:transform 80ms ease;}
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
@@ -45,10 +55,19 @@ const MODEL = "claude-sonnet-4-20250514";
 const C = {
   bg:"#000000", card:"rgba(255,255,255,0.03)", cardHover:"rgba(255,255,255,0.05)",
   green:"#3ECF8E", greenDim:"rgba(62,207,142,0.08)", greenGlow:"rgba(62,207,142,0.2)", green2:"#2BA874",
-  red:"#F87171", amber:"#FBBF24", blue:"#60A5FA", purple:"#A78BFA",
-  textPrimary:"#FFFFFF", textDim:"rgba(255,255,255,0.4)", textVeryDim:"rgba(255,255,255,0.25)",
-  border:"rgba(255,255,255,0.06)", inputBg:"rgba(255,255,255,0.06)",
+  greenLight:"#4AE09C", greenDark:"#2BA874", greenSubtle:"rgba(62,207,142,0.06)",
+  red:"#F87171", redDim:"rgba(248,113,113,0.1)",
+  amber:"#FBBF24", amberDim:"rgba(251,191,36,0.1)",
+  blue:"#60A5FA", blueDim:"rgba(96,165,250,0.1)",
+  purple:"#A78BFA", purpleDim:"rgba(167,139,250,0.1)",
+  textPrimary:"#FFFFFF", textSecondary:"rgba(255,255,255,0.7)", textTertiary:"rgba(255,255,255,0.45)",
+  textDim:"rgba(255,255,255,0.4)", textMuted:"rgba(255,255,255,0.3)",
+  textVeryDim:"rgba(255,255,255,0.25)", textDisabled:"rgba(255,255,255,0.2)",
+  border:"rgba(255,255,255,0.06)", borderLight:"rgba(255,255,255,0.04)", borderFocus:"rgba(62,207,142,0.4)",
+  divider:"rgba(255,255,255,0.04)", inputBg:"rgba(255,255,255,0.06)",
   surface:"rgba(255,255,255,0.02)", surfaceMid:"rgba(255,255,255,0.04)",
+  bgCard:"rgba(255,255,255,0.02)", bgCardHover:"rgba(255,255,255,0.04)",
+  bgElevated:"#0A0A0A", bgInput:"rgba(255,255,255,0.05)", bgSurface:"rgba(255,255,255,0.03)",
 };
 
 const DEFAULT_GOALS = {
@@ -466,6 +485,30 @@ const Icon={
 };
 
 // ─── BASE COMPONENTS ──────────────────────────────────────────────────────────
+function AnimatedNumber({ value, duration = 600, decimals = 0 }) {
+  const [displayValue, setDisplayValue] = useState(0);
+  const prevValue = useRef(0);
+  useEffect(() => {
+    const start = prevValue.current;
+    const end = value || 0;
+    const startTime = performance.now();
+    const animate = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = start + (end - start) * eased;
+      setDisplayValue(current);
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        prevValue.current = end;
+      }
+    };
+    requestAnimationFrame(animate);
+  }, [value, duration]);
+  return decimals > 0 ? displayValue.toFixed(decimals) : Math.round(displayValue);
+}
+
 function CircularRing({value,goal,color,icon,label,size=72}){
   const r=(size-12)/2,circ=2*Math.PI*r,offset=circ-(circ*pct(value,goal))/100;
   return(
@@ -574,6 +617,23 @@ function Toast({message}){
   return(<div style={{position:"fixed",bottom:120,left:"50%",transform:"translateX(-50%)",background:C.card,border:`0.5px solid ${C.border}`,borderRadius:20,padding:"8px 18px",color:C.green,fontSize:13,fontWeight:600,zIndex:1000,boxShadow:"0 4px 16px rgba(0,0,0,0.4)",animation:"fadeIn 0.2s ease"}}>{message}</div>);
 }
 
+function MilestoneToast({milestone, onDismiss}) {
+  useEffect(() => {
+    const timer = setTimeout(onDismiss, 5000);
+    return () => clearTimeout(timer);
+  }, [milestone?.id]);
+  if (!milestone) return null;
+  return (
+    <div style={{position:"fixed",top:0,left:0,right:0,zIndex:1500,padding:"max(20px, env(safe-area-inset-top)) 16px 0",animation:"slideDown 0.3s ease",pointerEvents:"auto"}}>
+      <div style={{maxWidth:430,margin:"0 auto",background:"rgba(62,207,142,0.12)",backdropFilter:"blur(20px)",WebkitBackdropFilter:"blur(20px)",border:"0.5px solid rgba(62,207,142,0.25)",borderRadius:16,padding:"14px 16px",display:"flex",alignItems:"flex-start",gap:12,boxShadow:"0 8px 32px rgba(0,0,0,0.4)"}}>
+        <span style={{fontSize:18,flexShrink:0,animation:"successPop 0.4s ease 0.1s both"}}>🏆</span>
+        <div style={{flex:1,color:"rgba(255,255,255,0.85)",fontSize:13,lineHeight:1.55}}>{milestone.text}</div>
+        <button onClick={onDismiss} style={{background:"none",border:"none",color:"rgba(255,255,255,0.3)",cursor:"pointer",flexShrink:0,padding:12,margin:-12,touchAction:"manipulation"}}><Icon.x/></button>
+      </div>
+    </div>
+  );
+}
+
 function BottomNav({active,onNav}){
   const tabs=[{id:"today",label:"Today",icon:Icon.today},{id:"insights",label:"Insights",icon:Icon.insights},{id:"snap",label:"",icon:null},{id:"history",label:"History",icon:Icon.history},{id:"me",label:"Me",icon:Icon.me}];
   return(
@@ -626,6 +686,9 @@ function HeroRing({totals, goals, avgScore, meals}) {
             const offset=circ*(1-pct);
             return(<g key={i}>
               <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth={sw}/>
+              {pct>0&&<circle cx={cx} cy={cy} r={r} fill="none" stroke={color} strokeWidth={sw+6}
+                strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={offset}
+                style={{filter:"blur(6px)",opacity:0.25,transition:"stroke-dashoffset 0.8s ease-out",transitionDelay:`${i*0.1}s`}}/>}
               <circle cx={cx} cy={cy} r={r} fill="none" stroke={color} strokeWidth={sw}
                 strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={offset}
                 style={{transition:"stroke-dashoffset 0.8s ease-out",transitionDelay:`${i*0.1}s`}}/>
@@ -634,7 +697,7 @@ function HeroRing({totals, goals, avgScore, meals}) {
         </svg>
         <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:2}}>
           <div style={{fontSize:42,fontWeight:700,color:"#FFFFFF",letterSpacing:"-2px",lineHeight:1,animation:"countUp 0.4s ease"}}>
-            {noMeals ? "—" : (avgScore||0).toFixed(1)}
+            {noMeals ? "—" : <AnimatedNumber value={avgScore||0} decimals={1}/>}
           </div>
           <div style={{fontSize:10,fontWeight:600,color:"rgba(255,255,255,0.25)",letterSpacing:"1.5px",textTransform:"uppercase"}}>
             NOURI SCORE
@@ -656,7 +719,10 @@ function HeroRing({totals, goals, avgScore, meals}) {
 }
 // ─── TODAY SCREEN ─────────────────────────────────────────────────────────────
 function TodayScreen({meals,goals,allMeals,allCheckins,onViewMeal,onMealAdjust,dayCount,profile,onCheckinDone,onMilestoneDismiss,pendingMilestone}){
-  const totals=useMemo(()=>sumNutrients(meals.map(m=>({nutrients:m.meal_totals}))),[meals]);
+  const [viewDate,setViewDate]=useState(today());
+  const isToday=viewDate===today();
+  const viewMeals=useMemo(()=>isToday?meals:(allMeals[viewDate]||[]),[isToday,meals,allMeals,viewDate]);
+  const viewTotals=useMemo(()=>sumNutrients(viewMeals.map(m=>({nutrients:m.meal_totals}))),[viewMeals]);
   const [checkinDone,setCheckinDone]=useState(false);
   const [sleep,setSleep]=useState(0);
   const [energy,setEnergy]=useState(0);
@@ -671,24 +737,34 @@ function TodayScreen({meals,goals,allMeals,allCheckins,onViewMeal,onMealAdjust,d
   const hour=new Date().getHours();
   const greeting=hour<11?"Good morning":hour<16?"Good afternoon":"Good evening";
 
+  const prevDay=()=>{const d=new Date(viewDate+'T12:00:00');d.setDate(d.getDate()-1);setViewDate(localDateKey(d));};
+  const nextDay=()=>{if(viewDate>=today())return;const d=new Date(viewDate+'T12:00:00');d.setDate(d.getDate()+1);setViewDate(localDateKey(d));};
+  const dateLabel=useMemo(()=>{
+    if(isToday)return null;
+    const yest=new Date();yest.setDate(yest.getDate()-1);
+    if(viewDate===localDateKey(yest))return"Yesterday";
+    return new Date(viewDate+'T12:00:00').toLocaleDateString("en",{weekday:"short",month:"short",day:"numeric"});
+  },[viewDate,isToday]);
+
   const macros=[{key:"calories",label:"Calories",icon:"⚡",color:C.amber},{key:"protein_g",label:"Protein",icon:"💪",color:C.green},{key:"carbs_g",label:"Carbs",icon:"🌾",color:C.blue},{key:"fat_g",label:"Fat",icon:"🥑",color:C.purple}];
 
   const hasCheckin=allCheckins&&allCheckins[today()];
-  const dayScores=meals.filter(m=>m.meal_totals).map(m=>mealScore(m.meal_totals,goals));
+  const dayScores=viewMeals.filter(m=>m.meal_totals).map(m=>mealScore(m.meal_totals,goals));
   const avgScore=dayScores.length?Math.round(dayScores.reduce((s,v)=>s+v,0)/dayScores.length*10)/10:null;
 
   // Gaps for today
-  const gapItems=meals.length>0?Object.keys(NUTRIENT_FOOD_SUGGESTIONS).map(k=>({key:k,label:NUTRIENT_LABELS[k],pct:pct(totals[k]||0,goals[k]||DEFAULT_GOALS[k]),foods:NUTRIENT_FOOD_SUGGESTIONS[k]})).filter(g=>g.pct<40).sort((a,b)=>a.pct-b.pct).slice(0,3):[];
+  const gapItems=viewMeals.length>0?Object.keys(NUTRIENT_FOOD_SUGGESTIONS).map(k=>({key:k,label:NUTRIENT_LABELS[k],pct:pct(viewTotals[k]||0,goals[k]||DEFAULT_GOALS[k]),foods:NUTRIENT_FOOD_SUGGESTIONS[k]})).filter(g=>g.pct<40).sort((a,b)=>a.pct-b.pct).slice(0,3):[];
 
   // Post-meal check
   const lastMeal=meals[meals.length-1];
   const showPostMeal=useMemo(()=>{
+    if(!isToday)return false;
     if(!lastMeal||lastMeal.post_meal_checked)return false;
     if(lastMeal.source==="quick")return false;
     if((lastMeal.meal_totals?.calories||0)<50)return false;
     const elapsed=(Date.now()-new Date(lastMeal.timestamp).getTime())/60000;
     return elapsed>25&&elapsed<120;
-  },[lastMeal,tick]);
+  },[lastMeal,tick,isToday]);
 
   // Insight rotation
   const insightData=useMemo(()=>{
@@ -712,30 +788,33 @@ function TodayScreen({meals,goals,allMeals,allCheckins,onViewMeal,onMealAdjust,d
 
   return(
     <div style={{padding:"64px 24px 110px",overflowY:"auto",height:"100dvh"}}>
-      {/* Header */}
+      {/* Header with date navigation */}
       <div style={{marginBottom:24,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-        <div>
-          <div style={{color:"rgba(255,255,255,0.25)",fontSize:12,fontWeight:600,textTransform:"uppercase",letterSpacing:"1.5px"}}>{new Date().toLocaleDateString("en",{weekday:"short",month:"short",day:"numeric"})}</div>
-          <div style={{color:"#FFFFFF",fontSize:32,fontWeight:700,marginTop:3,letterSpacing:"-0.5px"}}>{greeting}</div>
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          <button onClick={prevDay} style={{background:"none",border:"none",color:C.textDim,fontSize:20,cursor:"pointer",padding:"8px",touchAction:"manipulation",lineHeight:1}}>‹</button>
+          <div>
+            <div style={{color:"rgba(255,255,255,0.25)",fontSize:12,fontWeight:600,textTransform:"uppercase",letterSpacing:"1.5px"}}>{isToday?new Date().toLocaleDateString("en",{weekday:"short",month:"short",day:"numeric"}):dateLabel}</div>
+            <div style={{color:"#FFFFFF",fontSize:32,fontWeight:700,marginTop:3,letterSpacing:"-0.5px"}}>{isToday?greeting:dateLabel}</div>
+          </div>
+          <button onClick={nextDay} style={{background:"none",border:"none",color:viewDate>=today()?C.textDisabled:C.textDim,fontSize:20,cursor:viewDate>=today()?"default":"pointer",padding:"8px",touchAction:"manipulation",lineHeight:1}}>›</button>
         </div>
-        {(profile?.current_streak||0)>0&&<div style={{display:"flex",alignItems:"center",gap:5,background:"rgba(255,255,255,0.05)",border:"0.5px solid rgba(255,255,255,0.09)",borderRadius:20,padding:"6px 12px"}}>
-          <span style={{fontSize:12}}>🔥</span>
-          <span style={{color:"rgba(255,255,255,0.75)",fontSize:12,fontWeight:600}}>{profile.current_streak}</span>
-          <span style={{color:"rgba(255,255,255,0.2)",fontSize:10}}>day{profile.current_streak===1?"":"s"}</span>
-        </div>}
+        <div style={{display:"flex",alignItems:"center",gap:8}}>
+          {!isToday&&<button onClick={()=>setViewDate(today())} style={{background:C.greenDim,border:`0.5px solid ${C.green}40`,borderRadius:16,padding:"5px 10px",color:C.green,fontSize:11,fontWeight:600,cursor:"pointer",touchAction:"manipulation"}}>Today</button>}
+          {isToday&&(profile?.current_streak||0)>0&&<div style={{display:"flex",alignItems:"center",gap:5,background:"rgba(255,255,255,0.05)",border:"0.5px solid rgba(255,255,255,0.09)",borderRadius:20,padding:"6px 12px"}}>
+            <span style={{fontSize:12}}>🔥</span>
+            <span style={{color:"rgba(255,255,255,0.75)",fontSize:12,fontWeight:600}}>{profile.current_streak}</span>
+            <span style={{color:"rgba(255,255,255,0.2)",fontSize:10}}>day{profile.current_streak===1?"":"s"}</span>
+          </div>}
+        </div>
       </div>
 
-      {/* Milestone card */}
+      {/* Milestone toast */}
       {pendingMilestone&&(
-        <div style={{background:"rgba(62,207,142,0.04)",border:"0.5px solid rgba(62,207,142,0.15)",borderRadius:16,padding:"16px 18px",marginBottom:16,display:"flex",alignItems:"flex-start",gap:12,animation:"slideUp 0.25s ease"}}>
-          <span style={{fontSize:18,flexShrink:0}}>🏆</span>
-          <div style={{flex:1,color:"rgba(255,255,255,0.8)",fontSize:13,lineHeight:1.55}}>{pendingMilestone.text}</div>
-          <button onClick={()=>onMilestoneDismiss(pendingMilestone.id)} style={{background:"none",border:"none",color:C.textVeryDim,cursor:"pointer",flexShrink:0,padding:12,margin:-12,touchAction:"manipulation"}}><Icon.x/></button>
-        </div>
+        <MilestoneToast milestone={pendingMilestone} onDismiss={()=>onMilestoneDismiss(pendingMilestone.id)}/>
       )}
 
       {/* Morning check-in */}
-      {!hasCheckin&&!checkinDone&&(
+      {isToday&&!hasCheckin&&!checkinDone&&(
         <div style={{background:"rgba(255,255,255,0.02)",border:"0.5px solid rgba(255,255,255,0.06)",borderRadius:16,padding:"16px 18px",marginBottom:16}}>
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
             <div style={{width:6,height:6,borderRadius:3,background:C.green,flexShrink:0}}/>
@@ -746,10 +825,10 @@ function TodayScreen({meals,goals,allMeals,allCheckins,onViewMeal,onMealAdjust,d
           <button onClick={submitCheckin} disabled={!sleep||!energy} style={{width:"100%",padding:"11px",background:sleep&&energy?`linear-gradient(135deg,${C.green},${C.green2})`:"rgba(255,255,255,0.05)",border:`0.5px solid ${sleep&&energy?"transparent":"rgba(255,255,255,0.06)"}`,borderRadius:12,color:sleep&&energy?"#000":C.textVeryDim,fontSize:13,fontWeight:700,cursor:sleep&&energy?"pointer":"default",marginTop:4,letterSpacing:"-0.1px"}}>Log check-in</button>
         </div>
       )}
-      {checkinDone&&<div style={{color:C.green,fontSize:12,textAlign:"center",marginBottom:14,fontWeight:600,letterSpacing:"0.2px"}}>✓ Morning check-in logged</div>}
+      {isToday&&checkinDone&&<div style={{color:C.green,fontSize:12,textAlign:"center",marginBottom:14,fontWeight:600,letterSpacing:"0.2px"}}>✓ Morning check-in logged</div>}
 
       {/* Hero Ring */}
-      <HeroRing totals={totals} goals={goals} avgScore={avgScore} meals={meals}/>
+      <HeroRing totals={viewTotals} goals={goals} avgScore={avgScore} meals={viewMeals}/>
 
       {/* Gap card */}
       {gapItems.length>0&&(
@@ -773,7 +852,7 @@ function TodayScreen({meals,goals,allMeals,allCheckins,onViewMeal,onMealAdjust,d
       )}
 
       {/* Weekly summary or insight */}
-      {showWeekly&&weeklySummary&&!weeklyCollapsed?(
+      {isToday&&showWeekly&&weeklySummary&&!weeklyCollapsed?(
         <div style={{background:C.card,border:`0.5px solid ${C.border}`,borderRadius:16,padding:"16px 18px",marginBottom:14}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
             <div style={{color:"rgba(255,255,255,0.25)",fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"1.5px"}}>YOUR WEEK IN REVIEW</div>
@@ -825,9 +904,9 @@ function TodayScreen({meals,goals,allMeals,allCheckins,onViewMeal,onMealAdjust,d
 
       {/* Meal timeline */}
       <div>
-        <div style={{color:"rgba(255,255,255,0.25)",fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"1.5px",marginBottom:12}}>TODAY'S MEALS</div>
-        {meals.length===0?(<div style={{color:"rgba(255,255,255,0.55)",fontSize:14,textAlign:"center",letterSpacing:"-0.1px",paddingTop:32}}>No meals logged yet.<br/><span style={{color:C.textVeryDim,fontSize:12}}>Tap + to get started.</span></div>)
-        :meals.map(meal=><MealEntry key={meal.id} meal={meal} onTap={typeof onViewMeal==="function"?()=>onViewMeal(meal):undefined} goals={goals}/>)}
+        <div style={{color:"rgba(255,255,255,0.25)",fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"1.5px",marginBottom:12}}>{isToday?"TODAY'S MEALS":"MEALS"}</div>
+        {viewMeals.length===0?(<div style={{color:"rgba(255,255,255,0.55)",fontSize:14,textAlign:"center",letterSpacing:"-0.1px",paddingTop:32}}>{isToday?"No meals logged yet.":"No meals logged this day."}<br/><span style={{color:C.textVeryDim,fontSize:12}}>{isToday?"Tap + to get started.":""}</span></div>)
+        :viewMeals.map(meal=><MealEntry key={meal.id} meal={meal} onTap={typeof onViewMeal==="function"?()=>onViewMeal(meal):undefined} goals={goals}/>)}
       </div>
     </div>
   );
@@ -1116,7 +1195,7 @@ function MeScreen({profile,goals,quickAdds,onSave,onRecalibrate,onSaveQuickAdds}
 }
 
 // ─── MEAL VIEW SCREEN ─────────────────────────────────────────────────────────
-function MealViewScreen({meal,goals,onBack}){
+function MealViewScreen({meal,goals,onBack,onDelete}){
   const totals=meal.meal_totals||{};
   const score=mealScore(totals,goals||DEFAULT_GOALS);
   const sl=scoreLabel(score);
@@ -1141,6 +1220,9 @@ function MealViewScreen({meal,goals,onBack}){
           </div>
         }
         <button onClick={onBack} style={{position:"absolute",top:48,left:16,background:"rgba(0,0,0,0.6)",border:"none",borderRadius:20,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",color:"#fff"}}><Icon.back/></button>
+        {onDelete&&<button onClick={()=>{if(confirm('Delete this meal?'))onDelete(meal.id);}} style={{position:"absolute",top:48,right:70,background:"rgba(248,113,113,0.7)",border:"none",borderRadius:20,width:36,height:36,display:"flex",alignItems:"center",justifyContent:"center",cursor:"pointer",color:"#fff",touchAction:"manipulation"}}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </button>}
         <div style={{position:"absolute",top:48,right:16,background:"rgba(0,0,0,0.55)",backdropFilter:"blur(8px)",borderRadius:20,padding:"5px 12px"}}>
           <span style={{color:sl.color,fontSize:12,fontWeight:600}}>{score.toFixed(1)} {sl.label}</span>
         </div>
@@ -1546,6 +1628,7 @@ function SnapScreen({ profile, onLogMeal, quickAdds, learnedPortions, initialMod
   const videoRef = React.useRef(null);
   const canvasRef = React.useRef(null);
   const barcodeDetectorRef = React.useRef(null);
+  const fileInputRef = React.useRef(null);
   const scanIntervalRef = React.useRef(null);
   const streamRef = React.useRef(null);
   const [showManualBarcode, setShowManualBarcode] = React.useState(false);
@@ -1639,6 +1722,20 @@ function SnapScreen({ profile, onLogMeal, quickAdds, learnedPortions, initialMod
     const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
     stopStream();
     setCaptured(dataUrl);
+  }
+
+  function handleGallerySelect(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async () => {
+      try {
+        const resized = await resizeImage(reader.result);
+        setCaptured(`data:image/jpeg;base64,${resized}`);
+        stopStream();
+      } catch(err) { setError('Could not load image'); }
+    };
+    reader.readAsDataURL(file);
   }
 
   async function analyzePhoto() {
@@ -1755,9 +1852,14 @@ function SnapScreen({ profile, onLogMeal, quickAdds, learnedPortions, initialMod
                 <div style={{position:'absolute',bottom:116,left:0,right:0,textAlign:'center',color:'rgba(255,255,255,0.22)',fontSize:11}}>AI identifies food and estimates portions</div>
                 {profile?.hand_calibrated&&<div style={{position:'absolute',top:20,left:'50%',transform:'translateX(-50%)',background:'rgba(0,0,0,0.55)',backdropFilter:'blur(8px)',borderRadius:20,padding:'5px 14px',color:'rgba(255,255,255,0.4)',fontSize:11,whiteSpace:'nowrap'}}>Tip: rest your hand near the plate</div>}
               </div>
-              {/* Cinematic shutter */}
-              <div style={{position:'absolute',bottom:100,left:0,right:0,display:'flex',justifyContent:'center',zIndex:200}}>
+              {/* Shutter + Gallery */}
+              <input ref={fileInputRef} type="file" accept="image/*" style={{display:'none'}} onChange={handleGallerySelect}/>
+              <div style={{position:'absolute',bottom:100,left:0,right:0,display:'flex',justifyContent:'center',alignItems:'center',gap:28,zIndex:200}}>
+                <button onClick={()=>fileInputRef.current?.click()} style={{width:44,height:44,borderRadius:22,background:'rgba(255,255,255,0.12)',border:'none',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',touchAction:'manipulation'}}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                </button>
                 <button onClick={capturePhoto} style={{width:72,height:72,borderRadius:'50%',background:'#ffffff',border:'none',cursor:'pointer',boxShadow:'0 0 0 5px rgba(255,255,255,0.15)',outline:'none',WebkitTapHighlightColor:'transparent',touchAction:'manipulation'}}/>
+                <div style={{width:44}}/>
               </div>
             </>
           ) : (
@@ -2065,6 +2167,22 @@ function App() {
     showToast('Updated!');
   }
 
+  async function deleteMeal(mealId) {
+    const updated = { ...allMeals };
+    for (const key of Object.keys(updated)) {
+      const dayMeals = updated[key] || [];
+      const filtered = dayMeals.filter(m => m.id !== mealId);
+      if (filtered.length !== dayMeals.length) {
+        if (filtered.length === 0) delete updated[key];
+        else updated[key] = filtered;
+        break;
+      }
+    }
+    setAllMeals(updated);
+    await storage.set('nouri:meals', updated);
+    showToast('Meal deleted');
+  }
+
   // Save checkin
   async function saveCheckin(checkin) {
     const currentDayKey = today();
@@ -2124,7 +2242,7 @@ function App() {
   );
 
   if (screen === 'mealView' && viewingMeal) return (
-    <MealViewScreen meal={viewingMeal} goals={goals} onBack={()=>{setViewingMeal(null);setScreen('main');}}/>
+    <MealViewScreen meal={viewingMeal} goals={goals} onBack={()=>{setViewingMeal(null);setScreen('main');}} onDelete={(id)=>{deleteMeal(id);setViewingMeal(null);setScreen('main');}}/>
   );
   if (screen === 'onboard' || (profile && !profile.onboarded)) return (
     <CalibrationScreen
