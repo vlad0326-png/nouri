@@ -57,7 +57,7 @@ const API_URL = "https://api.anthropic.com/v1/messages";
 const MODEL = "claude-sonnet-4-20250514";
 
 const C = {
-  bg:"#000000", card:"#1A1A1A", cardHover:"#1E1E1E",
+  bg:"#000000", card:"rgba(255,255,255,0.03)", cardHover:"rgba(255,255,255,0.05)",
   green:"#3ECF8E", greenDim:"rgba(62,207,142,0.08)", greenGlow:"rgba(62,207,142,0.2)", green2:"#2BA874",
   greenLight:"#4AE09C", greenDark:"#2BA874", greenSubtle:"rgba(62,207,142,0.06)",
   red:"#FF6B6B", redDim:"rgba(255,107,107,0.1)",
@@ -69,9 +69,9 @@ const C = {
   textVeryDim:"rgba(255,255,255,0.25)", textDisabled:"rgba(255,255,255,0.2)",
   border:"rgba(255,255,255,0.08)", borderLight:"rgba(255,255,255,0.06)", borderFocus:"rgba(62,207,142,0.4)",
   divider:"rgba(255,255,255,0.05)", inputBg:"rgba(255,255,255,0.06)",
-  surface:"#141414", surfaceMid:"#1C1C1C",
-  bgCard:"#1A1A1A", bgCardHover:"#1E1E1E",
-  bgElevated:"#1C1C1C", bgInput:"rgba(255,255,255,0.06)", bgSurface:"rgba(255,255,255,0.03)",
+  surface:"rgba(255,255,255,0.02)", surfaceMid:"rgba(255,255,255,0.04)",
+  bgCard:"rgba(255,255,255,0.03)", bgCardHover:"rgba(255,255,255,0.05)",
+  bgElevated:"rgba(255,255,255,0.04)", bgInput:"rgba(255,255,255,0.06)", bgSurface:"rgba(255,255,255,0.03)",
 };
 
 const DEFAULT_GOALS = {
@@ -774,7 +774,7 @@ function HeroRing({totals, goals, avgScore, meals}) {
           <div style={{fontSize:42,fontWeight:700,color:C.textPrimary,letterSpacing:"-2px",lineHeight:1,animation:"countUp 0.4s ease"}}>
             {noMeals ? "—" : <AnimatedNumber value={avgScore||0} decimals={1} duration={1800} punchy={true}/>}
           </div>
-          <div style={{fontSize:13,fontWeight:600,color:"rgba(255,255,255,0.25)",letterSpacing:"0.05em",textTransform:"uppercase"}}>
+          <div style={{fontSize:10,fontWeight:600,color:"rgba(255,255,255,0.25)",letterSpacing:"1.5px",textTransform:"uppercase"}}>
             NOURI SCORE
           </div>
         </div>
@@ -869,7 +869,7 @@ function TodayScreen({meals,goals,allMeals,allCheckins,onViewMeal,onMealAdjust,d
         <div style={{display:"flex",alignItems:"center",gap:8}}>
           <button onClick={prevDay} style={{background:"none",border:"none",color:C.textDim,fontSize:20,cursor:"pointer",padding:"8px",touchAction:"manipulation",lineHeight:1}}>‹</button>
           <div>
-            <div style={{color:"rgba(255,255,255,0.25)",fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em"}}>{isToday?new Date().toLocaleDateString("en",{weekday:"short",month:"short",day:"numeric"}):dateLabel}</div>
+            <div style={{color:"rgba(255,255,255,0.25)",fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"1.5px"}}>{isToday?new Date().toLocaleDateString("en",{weekday:"short",month:"short",day:"numeric"}):dateLabel}</div>
             <div style={{color:C.textPrimary,fontSize:32,fontWeight:700,marginTop:3,letterSpacing:"-0.5px"}}>{isToday?greeting:dateLabel}</div>
           </div>
           <button onClick={nextDay} style={{background:"none",border:"none",color:viewDate>=today()?C.textDisabled:C.textDim,fontSize:20,cursor:viewDate>=today()?"default":"pointer",padding:"8px",touchAction:"manipulation",lineHeight:1}}>›</button>
@@ -889,28 +889,28 @@ function TodayScreen({meals,goals,allMeals,allCheckins,onViewMeal,onMealAdjust,d
         <MilestoneToast milestone={pendingMilestone} onDismiss={()=>onMilestoneDismiss(pendingMilestone.id)}/>
       )}
 
+      {/* Hero Ring */}
+      <HeroRing totals={viewTotals} goals={goals} avgScore={avgScore} meals={viewMeals}/>
+
       {/* Morning check-in */}
       {isToday&&!hasCheckin&&!checkinDone&&(
-        <div style={{background:C.card,border:`0.5px solid ${C.border}`,borderRadius:16,padding:"16px 18px",marginBottom:16}}>
-          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
-            <div style={{width:6,height:6,borderRadius:3,background:C.green,flexShrink:0}}/>
-            <div style={{color:"rgba(255,255,255,0.25)",fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em"}}>MORNING CHECK-IN</div>
+        <div style={{background:C.card,border:`0.5px solid ${C.border}`,borderRadius:14,padding:"12px 14px",marginBottom:14}}>
+          <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
+            <div style={{width:5,height:5,borderRadius:3,background:C.green,flexShrink:0}}/>
+            <div style={{color:"rgba(255,255,255,0.25)",fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"1.5px"}}>MORNING CHECK-IN</div>
           </div>
           <RatingRow label="😴  How did you sleep?" value={sleep} onChange={setSleep}/>
           <RatingRow label="🪫  How's your energy?" value={energy} onChange={setEnergy}/>
-          <button onClick={submitCheckin} disabled={!sleep||!energy} style={{width:"100%",padding:"11px",background:sleep&&energy?`linear-gradient(135deg,${C.green},${C.green2})`:"rgba(255,255,255,0.05)",border:`0.5px solid ${sleep&&energy?"transparent":"rgba(255,255,255,0.06)"}`,borderRadius:12,color:sleep&&energy?"#000":C.textVeryDim,fontSize:13,fontWeight:700,cursor:sleep&&energy?"pointer":"default",marginTop:4,letterSpacing:"-0.1px"}}>Log check-in</button>
+          <button onClick={submitCheckin} disabled={!sleep||!energy} style={{width:"100%",padding:"10px",background:sleep&&energy?C.green:"rgba(255,255,255,0.05)",border:`0.5px solid ${sleep&&energy?"transparent":"rgba(255,255,255,0.06)"}`,borderRadius:10,color:sleep&&energy?"#000":C.textVeryDim,fontSize:13,fontWeight:700,cursor:sleep&&energy?"pointer":"default",marginTop:4,letterSpacing:"-0.1px"}}>Log check-in</button>
         </div>
       )}
       {isToday&&checkinDone&&<div style={{color:C.green,fontSize:12,textAlign:"center",marginBottom:14,fontWeight:600,letterSpacing:"0.2px"}}>✓ Check-in logged</div>}
-
-      {/* Hero Ring */}
-      <HeroRing totals={viewTotals} goals={goals} avgScore={avgScore} meals={viewMeals}/>
 
       {/* Gap card */}
       {gapItems.length>0&&(
         <div style={{background:C.card,border:`0.5px solid ${C.border}`,borderRadius:14,padding:"14px 16px",marginBottom:14}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:gapCollapsed?0:10}}>
-            <div style={{color:"rgba(255,255,255,0.25)",fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em"}}>STILL TO GET TODAY</div>
+            <div style={{color:"rgba(255,255,255,0.25)",fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"1.5px"}}>STILL TO GET TODAY</div>
             <button onClick={()=>setGapCollapsed(!gapCollapsed)} style={{background:"none",border:"none",color:C.textVeryDim,fontSize:11,cursor:"pointer",padding:"8px 12px",margin:"-8px -12px",touchAction:"manipulation"}}>{gapCollapsed?"show":"hide"}</button>
           </div>
           {!gapCollapsed&&gapItems.map(g=>(
@@ -931,7 +931,7 @@ function TodayScreen({meals,goals,allMeals,allCheckins,onViewMeal,onMealAdjust,d
       {isToday&&showWeekly&&weeklySummary&&!weeklyCollapsed?(
         <div style={{background:C.card,border:`0.5px solid ${C.border}`,borderRadius:16,padding:"16px 18px",marginBottom:14}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-            <div style={{color:"rgba(255,255,255,0.25)",fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em"}}>YOUR WEEK IN REVIEW</div>
+            <div style={{color:"rgba(255,255,255,0.25)",fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"1.5px"}}>YOUR WEEK IN REVIEW</div>
             <button onClick={()=>setWeeklyCollapsed(true)} style={{background:"none",border:"none",color:C.textVeryDim,fontSize:11,cursor:"pointer"}}>hide</button>
           </div>
           <div style={{color:C.textPrimary,fontSize:13,marginBottom:4}}>{weeklySummary.mealsThisWeek} meals logged · {weeklySummary.avgScore} avg score</div>
@@ -944,7 +944,7 @@ function TodayScreen({meals,goals,allMeals,allCheckins,onViewMeal,onMealAdjust,d
       ):dayCount<7?(
         <div style={{background:"rgba(255,255,255,0.02)",border:"0.5px solid rgba(255,255,255,0.05)",borderRadius:16,padding:"18px 20px",marginBottom:14}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-            <div style={{color:"rgba(255,255,255,0.2)",fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em"}}>BUILDING YOUR PICTURE</div>
+            <div style={{color:"rgba(255,255,255,0.2)",fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"1.5px"}}>BUILDING YOUR PICTURE</div>
             <div style={{color:C.green,fontSize:11,fontWeight:600}}>{Math.max(1,dayCount)}/7 days</div>
           </div>
           <div style={{color:"rgba(255,255,255,0.85)",fontSize:14,fontWeight:600,letterSpacing:"-0.2px",marginBottom:4}}>Insights unlock after 7 days of logging</div>
@@ -980,7 +980,7 @@ function TodayScreen({meals,goals,allMeals,allCheckins,onViewMeal,onMealAdjust,d
 
       {/* Meal timeline */}
       <div>
-        <div style={{color:"rgba(255,255,255,0.25)",fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:12}}>{isToday?"TODAY'S MEALS":"MEALS"}</div>
+        <div style={{color:"rgba(255,255,255,0.25)",fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"1.5px",marginBottom:12}}>{isToday?"TODAY'S MEALS":"MEALS"}</div>
         {viewMeals.length===0?(<div style={{color:"rgba(255,255,255,0.55)",fontSize:14,textAlign:"center",letterSpacing:"-0.1px",paddingTop:32}}>{isToday?"No meals logged yet.":"No meals logged this day."}<br/><span style={{color:C.textVeryDim,fontSize:12}}>{isToday?"Tap + to get started.":""}</span></div>)
         :viewMeals.map((meal,i)=><MealEntry key={meal.id} meal={meal} index={i} onTap={typeof onViewMeal==="function"?()=>onViewMeal(meal):undefined} goals={goals}/>)}
       </div>
@@ -996,7 +996,7 @@ function InsightsScreen({allMeals,goals,allCheckins}){
   return(
     <div style={{padding:`56px 24px ${contentBottomPadding}`,overflowY:"auto",height:"100dvh"}}>
       <div style={{marginBottom:24}}>
-        <div style={{color:"rgba(255,255,255,0.25)",fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em"}}>Your</div>
+        <div style={{color:"rgba(255,255,255,0.25)",fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"1.5px"}}>Your</div>
         <div style={{color:C.textPrimary,fontSize:28,fontWeight:700,marginTop:3,letterSpacing:"-0.5px"}}>Insights</div>
       </div>
       {dates.length<7?(
@@ -1012,7 +1012,7 @@ function InsightsScreen({allMeals,goals,allCheckins}){
         <>
           {gaps.length>0&&(
             <div style={{background:C.card,border:`0.5px solid ${C.border}`,borderRadius:16,padding:"16px 18px",marginBottom:16}}>
-              <div style={{color:C.amber,fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:12}}>NUTRIENTS TO BUILD</div>
+              <div style={{color:C.amber,fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"1.5px",marginBottom:12}}>NUTRIENTS TO BUILD</div>
               <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
                 {gaps.map(g=>(<div key={g.key} style={{background:`${C.red}22`,border:`0.5px solid ${C.red}44`,borderRadius:12,padding:"3px 10px",color:C.red,fontSize:12,fontWeight:600}}>{LIFE_IMPACT[g.key]?(LIFE_IMPACT[g.key].icon+" "+g.label+" ("+LIFE_IMPACT[g.key].area+")"):g.label} — {g.avgPct}% avg</div>))}
               </div>
@@ -1021,7 +1021,7 @@ function InsightsScreen({allMeals,goals,allCheckins}){
           {insights.map(i=><InsightCard key={i.id} insight={i}/>)}
           {weeklyRhythm.length>0&&(
             <div style={{background:C.card,border:"0.5px solid rgba(255,255,255,0.06)",borderRadius:14,padding:"16px 18px",marginTop:6}}>
-              <div style={{color:"rgba(255,255,255,0.25)",fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:6}}>WEEKLY RHYTHM</div>
+              <div style={{color:"rgba(255,255,255,0.25)",fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"1.5px",marginBottom:6}}>WEEKLY RHYTHM</div>
               <div style={{color:C.textDim,fontSize:11,marginBottom:12}}>How your week went</div>
               <div style={{display:"flex",gap:6,justifyContent:"center"}}>
                 {weeklyRhythm.map(({date,score,label})=>(
@@ -1202,7 +1202,7 @@ function MeScreen({profile,goals,quickAdds,onSave,onRecalibrate,onSaveQuickAdds}
         </div>
       </div>
       <div style={{marginBottom:20}}>
-        <div style={{color:"rgba(255,255,255,0.25)",fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:10}}>GOAL TEMPLATE</div>
+        <div style={{color:"rgba(255,255,255,0.25)",fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"1.5px",marginBottom:10}}>GOAL TEMPLATE</div>
         <div style={{display:"flex",gap:8}}>
           {[["general","General Health"],["high_protein","High Protein"],["custom","Custom"]].map(([id,label])=>(
             <button key={id} onClick={()=>applyPreset(id)} style={{flex:1,padding:"10px 4px",borderRadius:10,background:preset===id?"rgba(62,207,142,0.10)":"rgba(255,255,255,0.04)",border:`0.5px solid ${preset===id?"rgba(62,207,142,0.45)":"rgba(255,255,255,0.07)"}`,color:preset===id?C.green:C.textDim,fontSize:11,fontWeight:600,cursor:"pointer",transition:"all 0.15s ease"}}>{label}</button>
@@ -1211,7 +1211,7 @@ function MeScreen({profile,goals,quickAdds,onSave,onRecalibrate,onSaveQuickAdds}
         <div style={{color:C.textVeryDim,fontSize:11,marginTop:8}}>Change these anytime.</div>
       </div>
       <div style={{marginBottom:20}}>
-        <div style={{color:"rgba(255,255,255,0.25)",fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:10}}>DAILY GOALS</div>
+        <div style={{color:"rgba(255,255,255,0.25)",fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"1.5px",marginBottom:10}}>DAILY GOALS</div>
         {MACRO_KEYS.map(k=>(
           <div key={k} style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
             <div style={{color:C.textDim,fontSize:13}}>{NUTRIENT_LABELS[k]}</div>
@@ -1221,7 +1221,7 @@ function MeScreen({profile,goals,quickAdds,onSave,onRecalibrate,onSaveQuickAdds}
       </div>
       {/* Hand calibration */}
       <div style={{background:C.card,border:"0.5px solid rgba(255,255,255,0.06)",borderRadius:14,padding:"16px 18px",marginBottom:16}}>
-        <div style={{color:"rgba(255,255,255,0.25)",fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:8}}>HAND CALIBRATION</div>
+        <div style={{color:"rgba(255,255,255,0.25)",fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"1.5px",marginBottom:8}}>HAND CALIBRATION</div>
         {profile.hand_calibrated?(
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
             <div><div style={{color:C.green,fontSize:13,fontWeight:600}}>Calibrated</div><div style={{color:C.textDim,fontSize:12}}>Palm: {profile.palm_width_inches}"w × {profile.palm_length_inches}"l</div></div>
@@ -1236,7 +1236,7 @@ function MeScreen({profile,goals,quickAdds,onSave,onRecalibrate,onSaveQuickAdds}
       </div>
       {/* Quick adds config */}
       <div style={{marginBottom:16}}>
-        <div style={{color:"rgba(255,255,255,0.25)",fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:10}}>QUICK ADDS</div>
+        <div style={{color:"rgba(255,255,255,0.25)",fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"1.5px",marginBottom:10}}>QUICK ADDS</div>
         {localQA.map((item,idx)=>(
           <div key={item.id}>
             {editingQA===item.id?(
@@ -1273,7 +1273,7 @@ function MeScreen({profile,goals,quickAdds,onSave,onRecalibrate,onSaveQuickAdds}
         {apiKey&&<div style={{color:C.green,fontSize:11,marginTop:6}}>✓ Key saved</div>}
         {!apiKey&&<div style={{color:C.amber,fontSize:11,marginTop:6}}>⚠ Required for photo analysis and food search</div>}
       </div>
-      <button onClick={handleSave} style={{width:"100%",padding:15,background:`linear-gradient(150deg,${C.green},${C.green2})`,border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer",boxShadow:`0 6px 20px rgba(62,207,142,0.28)`,letterSpacing:"-0.1px"}}>{saved?"Saved!":"Save Goals"}</button>
+      <button onClick={handleSave} style={{width:"100%",padding:15,background:C.green,border:"none",borderRadius:12,color:"#fff",fontSize:15,fontWeight:700,cursor:"pointer",boxShadow:`0 6px 20px rgba(62,207,142,0.28)`,letterSpacing:"-0.1px"}}>{saved?"Saved!":"Save Goals"}</button>
       <div style={{textAlign:"center",marginTop:28,color:C.textVeryDim,fontSize:11}}>Your food. Your body. Connected.</div>
     </div>
   );
@@ -1328,7 +1328,7 @@ function MealViewScreen({meal,goals,onBack,onDelete}){
         </div>
         {(meal.components||[]).length>0&&(
           <div>
-            <div style={{color:"rgba(255,255,255,0.25)",fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:10}}>COMPONENTS</div>
+            <div style={{color:"rgba(255,255,255,0.25)",fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"1.5px",marginBottom:10}}>COMPONENTS</div>
             {(meal.components||[]).map((c,i)=>(
               <div key={i} style={{background:C.card,border:"0.5px solid rgba(255,255,255,0.06)",borderRadius:12,padding:"12px 14px",marginBottom:8}}>
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:5}}>
@@ -1406,7 +1406,7 @@ function CalibrationScreen({onComplete,onSkip,existingProfile}){
       </div>
       {/* Middle: calibration steps */}
       <div style={{padding:"0 28px"}}>
-        <div style={{color:"rgba(255,255,255,0.2)",fontSize:13,fontWeight:600,letterSpacing:"0.05em",textTransform:"uppercase",marginBottom:16}}>HOW PORTION CALIBRATION WORKS</div>
+        <div style={{color:"rgba(255,255,255,0.2)",fontSize:10,fontWeight:600,letterSpacing:"1.5px",textTransform:"uppercase",marginBottom:16}}>HOW PORTION CALIBRATION WORKS</div>
         {[["01","Place a credit card flat on any surface","Standard size — the AI uses it as a ruler"],
           ["02","Rest your hand next to it, fingers spread","Palm facing down, all five fingers visible"],
           ["03","One photo, calibrated forever","Nouri learns your hand size and uses it for every meal"]].map(([n,title,desc])=>(
@@ -1423,12 +1423,13 @@ function CalibrationScreen({onComplete,onSkip,existingProfile}){
       </div>
       {/* Bottom: CTA */}
       <div style={{padding:"0 24px",display:"flex",flexDirection:"column",gap:12}}>
-        <button onClick={()=>setStep(1)} style={{width:"100%",padding:16,background:`linear-gradient(150deg,${C.green},${C.green2})`,border:"none",borderRadius:14,color:"#000",fontSize:16,fontWeight:700,cursor:"pointer",letterSpacing:"-0.2px",boxShadow:"0 8px 28px rgba(62,207,142,0.3)"}}>
-          Calibrate hand size
+        <button onClick={()=>setStep(1)} style={{width:"100%",padding:16,background:C.green,border:"none",borderRadius:14,color:"#000",fontSize:16,fontWeight:700,cursor:"pointer",letterSpacing:"-0.2px",boxShadow:"0 8px 28px rgba(62,207,142,0.3)"}}>
+          Start Calibration
         </button>
         <button onClick={onSkip} style={{width:"100%",padding:14,background:"transparent",border:"0.5px solid rgba(255,255,255,0.08)",borderRadius:14,color:"rgba(255,255,255,0.35)",fontSize:14,cursor:"pointer"}}>
-          Skip for now
+          Skip — I'll do this later
         </button>
+        <div style={{color:"rgba(255,255,255,0.2)",fontSize:11,textAlign:"center",marginTop:8}}>You can calibrate anytime from your Profile.</div>
       </div>
     </div>
   );
@@ -1455,7 +1456,7 @@ function CalibrationScreen({onComplete,onSkip,existingProfile}){
           <path d="M8 18l7 7L28 11" stroke="#3ECF8E" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </div>
-      <div style={{color:C.textPrimary,fontSize:26,fontWeight:700,letterSpacing:"-0.5px",marginBottom:10}}>You're calibrated.</div>
+      <div style={{color:C.textPrimary,fontSize:26,fontWeight:700,letterSpacing:"-0.5px",marginBottom:10}}>Calibrated!</div>
       <div style={{color:"rgba(255,255,255,0.4)",fontSize:14,textAlign:"center",lineHeight:1.7,marginBottom:8}}>
         Palm: {result?.palm_width_inches}" wide × {result?.palm_length_inches}" long
       </div>
@@ -1463,7 +1464,7 @@ function CalibrationScreen({onComplete,onSkip,existingProfile}){
         Nouri will use your hand size to estimate portions from every photo you take.
       </div>
       <button onClick={()=>onComplete({...(existingProfile||{}),palm_width_inches:result?.palm_width_inches||3.5,palm_length_inches:result?.palm_length_inches||4.2,hand_calibrated:true,calibration_date:today(),onboarded:true})}
-        style={{width:"100%",padding:16,background:`linear-gradient(150deg,${C.green},${C.green2})`,border:"none",borderRadius:14,color:"#000",fontSize:16,fontWeight:700,cursor:"pointer",letterSpacing:"-0.2px",boxShadow:"0 8px 28px rgba(62,207,142,0.3)"}}>
+        style={{width:"100%",padding:16,background:C.green,border:"none",borderRadius:14,color:"#000",fontSize:16,fontWeight:700,cursor:"pointer",letterSpacing:"-0.2px",boxShadow:"0 8px 28px rgba(62,207,142,0.3)"}}>
         Start logging
       </button>
     </div>
@@ -1550,13 +1551,10 @@ function FoodDetailScreen({analysis,sourceImage,onLog,onBack,onRetakePhoto,onMan
   const topMicroKeys=useMemo(()=>new Set(topMicros.map(m=>m.key)),[topMicros]);
   const cumulativePct=(k)=>pct((totals[k]||0)+(todayTotals?.[k]||0),goals?.[k]||DEFAULT_GOALS[k]);
 
-  const detailBottomPadding = "calc(100px + env(safe-area-inset-bottom))";
+  const detailBottomPadding = "calc(40px + env(safe-area-inset-bottom))";
   return(
     <div style={{minHeight:"100dvh",background:C.bg,paddingBottom:detailBottomPadding}}>
-      {/* Fixed bottom log button */}
-      <div style={{position:"fixed",bottom:0,left:0,right:0,padding:"12px 20px",paddingBottom:"calc(12px + env(safe-area-inset-bottom))",background:"linear-gradient(to top,rgba(0,0,0,0.98) 50%,transparent)",zIndex:300,maxWidth:430,margin:"0 auto"}}>
-        <button onClick={()=>onLog(components,totals,true)} style={{width:"100%",padding:"16px",background:`linear-gradient(150deg,${C.green},${C.green2})`,border:"none",borderRadius:14,color:"#fff",fontSize:16,fontWeight:700,cursor:"pointer",boxShadow:"0 4px 20px rgba(62,207,142,0.3)",touchAction:"manipulation"}}>Log this meal</button>
-      </div>
+      {/* Fixed bottom log button removed — primary CTA is inline "Portions look right" */}
       {/* Photo */}
       <div style={{position:"relative",height:240,background:C.inputBg}}>
         {previewImageSrc&&<img src={previewImageSrc} style={{width:"100%",height:"100%",objectFit:"cover"}} alt=""/>}
@@ -1577,7 +1575,7 @@ function FoodDetailScreen({analysis,sourceImage,onLog,onBack,onRetakePhoto,onMan
 
         {/* Smart confirm */}
         <div style={{display:"flex",gap:8,marginBottom:14}}>
-          <button onClick={()=>onLog(components,totals,true)} style={{flex:2,padding:"13px",background:`linear-gradient(150deg,${C.green},${C.green2})`,border:"none",borderRadius:12,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",boxShadow:`0 4px 16px rgba(62,207,142,0.25)`}}>Portions look right — Log it ✓</button>
+          <button onClick={()=>onLog(components,totals,true)} style={{flex:2,padding:"13px",background:C.green,border:"none",borderRadius:12,color:"#fff",fontSize:13,fontWeight:700,cursor:"pointer",boxShadow:`0 4px 16px rgba(62,207,142,0.25)`}}>Portions look right — Log it ✓</button>
           <button onClick={()=>setPortionsExpanded(!portionsExpanded)} style={{flex:1,padding:"13px",background:portionsExpanded?"rgba(62,207,142,0.10)":"rgba(255,255,255,0.04)",border:`0.5px solid ${portionsExpanded?"rgba(62,207,142,0.4)":"rgba(255,255,255,0.08)"}`,borderRadius:12,color:portionsExpanded?C.green:C.textDim,fontSize:12,fontWeight:600,cursor:"pointer"}}>Adjust</button>
         </div>
 
@@ -1613,10 +1611,12 @@ function FoodDetailScreen({analysis,sourceImage,onLog,onBack,onRetakePhoto,onMan
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:6}}>
             <div style={{color:C.textVeryDim,fontSize:11}}>How was this cooked?</div>
             {components.length>1&&(
-              <select value={methodTarget} onChange={e=>{const idx=Number(e.target.value);setMethodTarget(idx);setCookingMethod(components[idx]?.cooking_method||cookingMethod);}}
-                style={{background:C.inputBg,border:`0.5px solid ${C.border}`,borderRadius:6,color:C.textDim,fontSize:11,padding:"2px 6px"}}>
-                {components.map((c,i)=><option key={i} value={i}>{c.name}</option>)}
-              </select>
+              <div style={{display:"flex",gap:5,overflowX:"auto",maxWidth:"60%",WebkitOverflowScrolling:"touch"}}>
+                {components.map((c,i)=>(
+                  <button key={i} onClick={()=>{setMethodTarget(i);setCookingMethod(components[i]?.cooking_method||cookingMethod);}}
+                    style={{padding:"5px 12px",borderRadius:16,border:`0.5px solid ${methodTarget===i?"rgba(62,207,142,0.5)":"rgba(255,255,255,0.07)"}`,background:methodTarget===i?"rgba(62,207,142,0.10)":"rgba(255,255,255,0.03)",color:methodTarget===i?C.green:C.textDim,fontSize:11,fontWeight:500,cursor:"pointer",whiteSpace:"nowrap",flexShrink:0,transition:"all 0.15s ease",touchAction:"manipulation"}}>{c.name}</button>
+                ))}
+              </div>
             )}
           </div>
           <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
@@ -1643,11 +1643,7 @@ function FoodDetailScreen({analysis,sourceImage,onLog,onBack,onRetakePhoto,onMan
                   </button>
                 ))}
               </div>
-              <div style={{display:"flex",gap:4}}>
-                {[{l:"0.5x",m:0.5},{l:"0.75x",m:0.75},{l:"1x",m:1.0},{l:"1.25x",m:1.25},{l:"1.5x",m:1.5},{l:"2x",m:2.0}].map(opt=>(
-                  <button key={opt.l} onClick={()=>adjustPortion(idx,opt.m)} style={{flex:1,padding:"8px 0",borderRadius:8,fontSize:12,fontWeight:600,border:`1px solid ${(comp._mult||1.0)===opt.m?C.green:C.border}`,background:(comp._mult||1.0)===opt.m?C.green:"rgba(255,255,255,0.05)",color:(comp._mult||1.0)===opt.m?"#000":C.textSecondary,cursor:"pointer",transition:"all 0.15s ease",touchAction:"manipulation"}}>{opt.l}</button>
-                ))}
-              </div>
+              {/* Multiplier row removed */}
             </div>
           );
         })}
@@ -1675,7 +1671,7 @@ function FoodDetailScreen({analysis,sourceImage,onLog,onBack,onRetakePhoto,onMan
 
         {/* Micronutrients */}
         <div style={{background:C.card,border:"0.5px solid rgba(255,255,255,0.06)",borderRadius:14,padding:"14px 16px",marginBottom:14}}>
-          <div style={{color:C.textVeryDim,fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em",marginBottom:8}}>MICRONUTRIENTS</div>
+          <div style={{color:C.textVeryDim,fontSize:10,fontWeight:600,textTransform:"uppercase",letterSpacing:"1.5px",marginBottom:8}}>MICRONUTRIENTS</div>
           <div style={{color:C.textVeryDim,fontSize:10,marginBottom:10}}>Shows cumulative daily % including this meal</div>
           {(()=>{let lastArea=null;return topMicros.map(m=>{const showHeader=m.area&&m.area!==lastArea;if(m.area)lastArea=m.area;return(
             <div key={m.key}>
@@ -1851,7 +1847,7 @@ function SupplementPicker({ onLog, onClose }) {
             ))}
           </div>
           <button onClick={logSelected}
-            style={{width:'100%',padding:'15px',background:`linear-gradient(150deg,${C.green},${C.green2})`,border:'none',borderRadius:14,
+            style={{width:'100%',padding:'15px',background:C.green,border:'none',borderRadius:14,
               color:'#fff',fontSize:15,fontWeight:700,cursor:'pointer',boxShadow:'0 4px 20px rgba(62,207,142,0.3)',touchAction:'manipulation'}}>
             Log {selected.length} supplement{selected.length>1?'s':''}
           </button>
@@ -2153,7 +2149,7 @@ function SnapScreen({ profile, onLogMeal, quickAdds, learnedPortions, initialMod
             Analyze →
           </button>
           <div>
-            <p style={{color:'rgba(255,255,255,0.25)',fontSize:13,fontWeight:600,textTransform:'uppercase',letterSpacing:'0.05em',margin:'4px 0 10px'}}>Quick Add</p>
+            <p style={{color:'rgba(255,255,255,0.25)',fontSize:10,fontWeight:600,textTransform:'uppercase',letterSpacing:'1.5px',margin:'4px 0 10px'}}>Quick Add</p>
             <div style={{display:'flex',flexWrap:'wrap',gap:8}}>
               {quickAdds.map((qa,i) => (
                 <button key={i} onClick={()=>tapQuickAdd(qa)}
