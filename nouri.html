@@ -6,9 +6,9 @@
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
   <meta name="apple-mobile-web-app-title" content="Nouri"/>
-  <meta name="theme-color" content="#080A0D"/>
+  <meta name="theme-color" content="#000000"/>
   <title>Nouri</title>
-  <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Nouri%22%2C%22short_name%22%3A%22Nouri%22%2C%22theme_color%22%3A%22%230C0F12%22%2C%22background_color%22%3A%22%230C0F12%22%2C%22display%22%3A%22standalone%22%2C%22start_url%22%3A%22%2F%22%7D"/>
+  <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Nouri%22%2C%22short_name%22%3A%22Nouri%22%2C%22theme_color%22%3A%22%23000000%22%2C%22background_color%22%3A%22%23000000%22%2C%22display%22%3A%22standalone%22%2C%22start_url%22%3A%22%2F%22%7D"/>
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Crect width='180' height='180' rx='40' fill='%230C0F12'/%3E%3Ccircle cx='90' cy='90' r='80' fill='%233ECF8E' opacity='.15'/%3E%3Ctext x='90' y='118' font-family='system-ui' font-size='90' font-weight='700' fill='%233ECF8E' text-anchor='middle'%3EN%3C/text%3E%3C/svg%3E"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
@@ -21,16 +21,16 @@
     input{font-family:inherit;}
     @keyframes spin{to{transform:rotate(360deg);}}@keyframes spinRing{to{transform:rotate(360deg);}}
     @keyframes scanLine{0%,100%{top:10%;}50%{top:85%;}}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
-    @keyframes fadeInFast{from{opacity:0;transform:translateY(3px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes fadeInFast{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
     @keyframes shimmer{0%{background-position:-200% 0;}100%{background-position:200% 0;}}
     @keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
     @keyframes scaleIn{from{opacity:0;transform:scale(0.97);}to{opacity:1;transform:scale(1);}}
-    @keyframes slideUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+    @keyframes slideUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
     @keyframes countUp{from{opacity:0;transform:scale(0.92);}to{opacity:1;transform:scale(1);}}
     @keyframes slideDown{from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);}}
     @keyframes fadeInScale{from{opacity:0;transform:scale(0.95);}to{opacity:1;transform:scale(1);}}
-    @keyframes glow{0%,100%{filter:drop-shadow(0 0 8px rgba(62,207,142,0.4));}50%{filter:drop-shadow(0 0 20px rgba(62,207,142,0.7));}}
+    @keyframes glow{0%,100%{filter:drop-shadow(0 0 8px rgba(62,207,142,0.25));}50%{filter:drop-shadow(0 0 20px rgba(62,207,142,0.35));}}
     @keyframes breathe{0%,100%{transform:scale(1);opacity:0.6;}50%{transform:scale(1.02);opacity:1;}}
     @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
     @keyframes ripple{0%{transform:scale(0);opacity:1;}100%{transform:scale(4);opacity:0;}}
@@ -40,8 +40,8 @@
     @keyframes progressFill{from{transform:scaleX(0);}to{transform:scaleX(1);}}
     button:active{transform:scale(0.97);transition:transform 100ms cubic-bezier(0.4, 0, 0.2, 1);}
     input:focus,textarea:focus{border-color:rgba(62,207,142,0.5)!important;outline:none;}
-    .glass{background:rgba(255,255,255,0.03);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border:1px solid rgba(255,255,255,0.06);}
-    .glass-strong{background:rgba(255,255,255,0.05);backdrop-filter:blur(60px);-webkit-backdrop-filter:blur(60px);border:1px solid rgba(255,255,255,0.08);}
+    .glass{background:rgba(255,255,255,0.05);backdrop-filter:blur(12px) saturate(150%);-webkit-backdrop-filter:blur(12px) saturate(150%);border:1px solid rgba(255,255,255,0.08);border-radius:16px;}
+    .glass-strong{background:rgba(255,255,255,0.06);backdrop-filter:blur(16px) saturate(150%);-webkit-backdrop-filter:blur(16px) saturate(150%);border:1px solid rgba(255,255,255,0.1);border-radius:16px;}
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
@@ -57,21 +57,21 @@ const API_URL = "https://api.anthropic.com/v1/messages";
 const MODEL = "claude-sonnet-4-20250514";
 
 const C = {
-  bg:"#000000", card:"rgba(255,255,255,0.03)", cardHover:"rgba(255,255,255,0.05)",
+  bg:"#000000", card:"#1A1A1A", cardHover:"#1E1E1E",
   green:"#3ECF8E", greenDim:"rgba(62,207,142,0.08)", greenGlow:"rgba(62,207,142,0.2)", green2:"#2BA874",
   greenLight:"#4AE09C", greenDark:"#2BA874", greenSubtle:"rgba(62,207,142,0.06)",
   red:"#FF6B6B", redDim:"rgba(255,107,107,0.1)",
   amber:"#FFB547", amberDim:"rgba(255,181,71,0.1)",
   blue:"#5B9CF6", blueDim:"rgba(91,156,246,0.1)",
   purple:"#A78BFA", purpleDim:"rgba(167,139,250,0.1)",
-  textPrimary:"#FFFFFF", textSecondary:"rgba(255,255,255,0.7)", textTertiary:"rgba(255,255,255,0.45)",
+  textPrimary:"#E8E8E8", textSecondary:"rgba(232,232,232,0.75)", textTertiary:"rgba(232,232,232,0.5)",
   textDim:"rgba(255,255,255,0.4)", textMuted:"rgba(255,255,255,0.3)",
   textVeryDim:"rgba(255,255,255,0.25)", textDisabled:"rgba(255,255,255,0.2)",
-  border:"rgba(255,255,255,0.06)", borderLight:"rgba(255,255,255,0.04)", borderFocus:"rgba(62,207,142,0.4)",
-  divider:"rgba(255,255,255,0.04)", inputBg:"rgba(255,255,255,0.06)",
-  surface:"rgba(255,255,255,0.02)", surfaceMid:"rgba(255,255,255,0.04)",
-  bgCard:"rgba(255,255,255,0.02)", bgCardHover:"rgba(255,255,255,0.04)",
-  bgElevated:"#0A0A0A", bgInput:"rgba(255,255,255,0.05)", bgSurface:"rgba(255,255,255,0.03)",
+  border:"rgba(255,255,255,0.08)", borderLight:"rgba(255,255,255,0.06)", borderFocus:"rgba(62,207,142,0.4)",
+  divider:"rgba(255,255,255,0.05)", inputBg:"rgba(255,255,255,0.06)",
+  surface:"#141414", surfaceMid:"#1C1C1C",
+  bgCard:"#1A1A1A", bgCardHover:"#1E1E1E",
+  bgElevated:"#1C1C1C", bgInput:"rgba(255,255,255,0.06)", bgSurface:"rgba(255,255,255,0.03)",
 };
 
 const DEFAULT_GOALS = {
@@ -495,7 +495,7 @@ const Icon={
 };
 
 // ─── BASE COMPONENTS ──────────────────────────────────────────────────────────
-function AnimatedNumber({ value, duration = 600, decimals = 0 }) {
+function AnimatedNumber({ value, duration = 600, decimals = 0, punchy = false }) {
   const [displayValue, setDisplayValue] = useState(0);
   const prevValue = useRef(0);
   useEffect(() => {
@@ -505,7 +505,9 @@ function AnimatedNumber({ value, duration = 600, decimals = 0 }) {
     const animate = (currentTime) => {
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
+      const eased = punchy
+        ? 1 - Math.pow(1 - progress, 2.5)
+        : 1 - Math.pow(1 - progress, 3);
       const current = start + (end - start) * eased;
       setDisplayValue(current);
       if (progress < 1) {
@@ -515,8 +517,12 @@ function AnimatedNumber({ value, duration = 600, decimals = 0 }) {
       }
     };
     requestAnimationFrame(animate);
-  }, [value, duration]);
-  return decimals > 0 ? displayValue.toFixed(decimals) : Math.round(displayValue);
+  }, [value, duration, punchy]);
+  return (
+    <span style={{ fontVariantNumeric: 'tabular-nums' }}>
+      {decimals > 0 ? displayValue.toFixed(decimals) : Math.round(displayValue)}
+    </span>
+  );
 }
 
 function CircularRing({value,goal,color,icon,label,size=72}){
@@ -579,7 +585,7 @@ function NutrientTooltip({nutrientKey,onClose}){
 
 function InsightCard({insight}){
   return(
-    <div style={{background:`${insight.color}0f`,border:`0.5px solid ${insight.color}33`,borderRadius:12,padding:"12px 14px",marginBottom:10,animation:"fadeIn 0.2s ease"}}>
+    <div style={{background:`${insight.color}0f`,border:`0.5px solid ${insight.color}33`,borderRadius:14,padding:"14px 16px",marginBottom:12,animation:"fadeIn 0.35s cubic-bezier(0.25,0.1,0.25,1)"}}>
       <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:6}}>
         <span style={{fontSize:18}}>{insight.icon}</span>
         <span style={{fontSize:9,fontWeight:700,textTransform:"uppercase",letterSpacing:"0.8px",color:insight.color}}>{insight.label}</span>
@@ -597,8 +603,8 @@ function MealEntry({meal,onTap,goals,index=0}){
   const sl=scoreLabel(score);
   const mealImageSrc=toImageSrc(meal.photo_data);
   return(
-    <div onClick={isInteractive?onTap:undefined} style={{display:"flex",alignItems:"center",gap:14,padding:"14px 0",borderBottom:"0.5px solid rgba(255,255,255,0.05)",cursor:isInteractive?"pointer":"default",animation:`fadeIn 0.4s ease ${index*0.05}s both`}}>
-      <div style={{width:64,height:64,borderRadius:10,overflow:"hidden",flexShrink:0,border:"0.5px solid rgba(255,255,255,0.05)",background:C.bgCard}}>
+    <div onClick={isInteractive?onTap:undefined} style={{display:"flex",alignItems:"center",gap:14,padding:"14px 0",borderBottom:"0.5px solid rgba(255,255,255,0.05)",cursor:isInteractive?"pointer":"default",animation:`fadeIn 0.35s cubic-bezier(0.25,0.1,0.25,1) ${index*0.08}s both`}}>
+      <div style={{width:64,height:64,borderRadius:12,overflow:"hidden",flexShrink:0,border:"0.5px solid rgba(255,255,255,0.08)",background:C.bgCard}}>
         {mealImageSrc
           ? <img src={mealImageSrc} style={{width:"100%",height:"100%",objectFit:"cover"}} alt=""/>
           : <div style={{width:"100%",height:"100%",background:"linear-gradient(135deg,rgba(255,255,255,0.05) 0%,rgba(255,255,255,0.02) 100%)",display:"flex",alignItems:"center",justifyContent:"center"}}>
@@ -610,12 +616,12 @@ function MealEntry({meal,onTap,goals,index=0}){
         }
       </div>
       <div style={{flex:1,minWidth:0}}>
-        <div style={{color:"#FFFFFF",fontSize:15,fontWeight:600,letterSpacing:"-0.02em",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{meal.meal_name}</div>
+        <div style={{color:C.textPrimary,fontSize:15,fontWeight:600,letterSpacing:"-0.02em",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{meal.meal_name}</div>
         <div style={{color:C.textDim,fontSize:12,marginTop:4}}>{time} · {Math.round(meal.meal_totals?.calories||0)} cal · {Math.round(meal.meal_totals?.protein_g||0)}g protein</div>
       </div>
       <div style={{display:"flex",alignItems:"center",gap:8,flexShrink:0}}>
         <div style={{background:`${sl.color}15`,padding:"3px 8px",borderRadius:6,display:"flex",flexDirection:"column",alignItems:"center",gap:2}}>
-          <div style={{fontSize:11,fontWeight:600,color:sl.color}}>{score.toFixed(1)}</div>
+          <div style={{fontSize:11,fontWeight:600,color:sl.color,fontVariantNumeric:'tabular-nums'}}>{score.toFixed(1)}</div>
         </div>
         {isInteractive&&<div style={{color:"rgba(255,255,255,0.12)",fontSize:14,lineHeight:1}}>›</div>}
       </div>
@@ -682,10 +688,13 @@ function HeroRing({totals, goals, avgScore, meals}) {
   const scorePct = Math.min(1, (avgScore||0) / 10);
   const size = 180; const cx = 90; const cy = 90;
   const rings = [
-    {r:78, sw:5, pct:calPct,  color:"#3ECF8E"},
-    {r:64, sw:4, pct:protPct, color:"rgba(255,255,255,0.6)"},
-    {r:51, sw:3, pct:scorePct,color:"rgba(251,191,36,0.7)"},
+    {r:78, sw:6, pct:calPct,  color:"#3ECF8E"},
+    {r:64, sw:5, pct:protPct, color:"rgba(255,255,255,0.6)"},
+    {r:51, sw:4, pct:scorePct,color:"rgba(251,191,36,0.7)"},
   ];
+  const ringEasing = "cubic-bezier(0, 0.71, 0.2, 1.01)";
+  const ringDuration = 1.8;
+  const ringStagger = 0.35;
   const calLabel = noMeals ? "Log your first meal" : `${Math.round(totals.calories||0).toLocaleString()} / ${calGoal.toLocaleString()} cal`;
   const protLabel = `${Math.round(totals.protein_g||0)}g / ${protGoalVal}g protein`;
   return (
@@ -696,19 +705,19 @@ function HeroRing({totals, goals, avgScore, meals}) {
             const circ=2*Math.PI*r;
             const offset=circ*(1-pct);
             return(<g key={i}>
-              <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={sw}/>
+              <circle cx={cx} cy={cy} r={r} fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth={sw}/>
               {pct>0&&<circle cx={cx} cy={cy} r={r} fill="none" stroke={color} strokeWidth={sw+8}
                 strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={offset}
-                style={{filter:"blur(8px)",opacity:0.3,transition:"stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1)",transitionDelay:`${i*0.1}s`}}/>}
+                style={{filter:"blur(8px)",opacity:0.25,transition:`stroke-dashoffset ${ringDuration}s ${ringEasing}`,transitionDelay:`${i*ringStagger}s`}}/>}
               <circle cx={cx} cy={cy} r={r} fill="none" stroke={color} strokeWidth={sw}
                 strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={offset}
-                style={{transition:"stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1)",transitionDelay:`${i*0.1}s`}}/>
+                style={{transition:`stroke-dashoffset ${ringDuration}s ${ringEasing}`,transitionDelay:`${i*ringStagger}s`}}/>
             </g>);
           })}
         </svg>
         <div style={{position:"absolute",top:0,left:0,right:0,bottom:0,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:2,animation:"breathe 3s ease-in-out infinite"}}>
-          <div style={{fontSize:42,fontWeight:700,color:"#FFFFFF",letterSpacing:"-2px",lineHeight:1,animation:"countUp 0.4s ease"}}>
-            {noMeals ? "—" : <AnimatedNumber value={avgScore||0} decimals={1}/>}
+          <div style={{fontSize:42,fontWeight:700,color:C.textPrimary,letterSpacing:"-2px",lineHeight:1,animation:"countUp 0.4s ease"}}>
+            {noMeals ? "—" : <AnimatedNumber value={avgScore||0} decimals={1} duration={1800} punchy={true}/>}
           </div>
           <div style={{fontSize:13,fontWeight:600,color:"rgba(255,255,255,0.25)",letterSpacing:"0.05em",textTransform:"uppercase"}}>
             NOURI SCORE
@@ -805,7 +814,7 @@ function TodayScreen({meals,goals,allMeals,allCheckins,onViewMeal,onMealAdjust,d
           <button onClick={prevDay} style={{background:"none",border:"none",color:C.textDim,fontSize:20,cursor:"pointer",padding:"8px",touchAction:"manipulation",lineHeight:1}}>‹</button>
           <div>
             <div style={{color:"rgba(255,255,255,0.25)",fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em"}}>{isToday?new Date().toLocaleDateString("en",{weekday:"short",month:"short",day:"numeric"}):dateLabel}</div>
-            <div style={{color:"#FFFFFF",fontSize:32,fontWeight:700,marginTop:3,letterSpacing:"-0.5px"}}>{isToday?greeting:dateLabel}</div>
+            <div style={{color:C.textPrimary,fontSize:32,fontWeight:700,marginTop:3,letterSpacing:"-0.5px"}}>{isToday?greeting:dateLabel}</div>
           </div>
           <button onClick={nextDay} style={{background:"none",border:"none",color:viewDate>=today()?C.textDisabled:C.textDim,fontSize:20,cursor:viewDate>=today()?"default":"pointer",padding:"8px",touchAction:"manipulation",lineHeight:1}}>›</button>
         </div>
@@ -826,7 +835,7 @@ function TodayScreen({meals,goals,allMeals,allCheckins,onViewMeal,onMealAdjust,d
 
       {/* Morning check-in */}
       {isToday&&!hasCheckin&&!checkinDone&&(
-        <div style={{background:"rgba(255,255,255,0.02)",border:"0.5px solid rgba(255,255,255,0.06)",borderRadius:16,padding:"16px 18px",marginBottom:16}}>
+        <div style={{background:C.card,border:`0.5px solid ${C.border}`,borderRadius:16,padding:"16px 18px",marginBottom:16}}>
           <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
             <div style={{width:6,height:6,borderRadius:3,background:C.green,flexShrink:0}}/>
             <div style={{color:"rgba(255,255,255,0.25)",fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em"}}>MORNING CHECK-IN</div>
@@ -843,7 +852,7 @@ function TodayScreen({meals,goals,allMeals,allCheckins,onViewMeal,onMealAdjust,d
 
       {/* Gap card */}
       {gapItems.length>0&&(
-        <div style={{background:C.card,border:"0.5px solid rgba(255,255,255,0.06)",borderRadius:14,padding:"14px 16px",marginBottom:14}}>
+        <div style={{background:C.card,border:`0.5px solid ${C.border}`,borderRadius:14,padding:"14px 16px",marginBottom:14}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:gapCollapsed?0:10}}>
             <div style={{color:"rgba(255,255,255,0.25)",fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em"}}>STILL TO GET TODAY</div>
             <button onClick={()=>setGapCollapsed(!gapCollapsed)} style={{background:"none",border:"none",color:C.textVeryDim,fontSize:11,cursor:"pointer",padding:"8px 12px",margin:"-8px -12px",touchAction:"manipulation"}}>{gapCollapsed?"show":"hide"}</button>
@@ -931,12 +940,12 @@ function InsightsScreen({allMeals,goals,allCheckins}){
     <div style={{padding:"56px 24px 100px",overflowY:"auto",height:"100dvh"}}>
       <div style={{marginBottom:24}}>
         <div style={{color:"rgba(255,255,255,0.25)",fontSize:13,fontWeight:600,textTransform:"uppercase",letterSpacing:"0.05em"}}>Your</div>
-        <div style={{color:"#FFFFFF",fontSize:28,fontWeight:700,marginTop:3,letterSpacing:"-0.5px"}}>Insights</div>
+        <div style={{color:C.textPrimary,fontSize:28,fontWeight:700,marginTop:3,letterSpacing:"-0.5px"}}>Insights</div>
       </div>
       {dates.length<7?(
         <div style={{textAlign:"center",paddingTop:60}}>
           <div style={{fontSize:44,marginBottom:20,animation:"pulse 2.5s ease-in-out infinite"}}>🔬</div>
-          <div style={{color:"#FFFFFF",fontSize:20,fontWeight:700,marginBottom:10,letterSpacing:"-0.5px"}}>Your pattern is building.</div>
+          <div style={{color:C.textPrimary,fontSize:20,fontWeight:700,marginBottom:10,letterSpacing:"-0.5px"}}>Your pattern is building.</div>
           <div style={{color:C.textDim,fontSize:14,lineHeight:1.6}}>After 7 days, you'll see how your eating connects to sleep, energy, and focus. Day {Math.max(1,dates.length)} of 7.</div>
           <div style={{width:180,height:4,background:"rgba(255,255,255,0.06)",borderRadius:4,overflow:"hidden",margin:"24px auto 0"}}>
             <div style={{height:"100%",width:`${(dates.length/7)*100}%`,background:C.green,borderRadius:2,backgroundImage:"linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent)",backgroundSize:"200% 100%",animation:"shimmer 2s linear infinite"}}/>
@@ -1129,7 +1138,7 @@ function MeScreen({profile,goals,quickAdds,onSave,onRecalibrate,onSaveQuickAdds}
           <span style={{fontSize:28,fontWeight:700,color:C.green}}>N</span>
         </div>
         <div style={{flex:1}}>
-          <div style={{color:"#FFFFFF",fontSize:22,fontWeight:700,letterSpacing:"-0.03em"}}>Profile & Goals</div>
+          <div style={{color:C.textPrimary,fontSize:22,fontWeight:700,letterSpacing:"-0.03em"}}>Profile & Goals</div>
           <div style={{color:C.textTertiary,fontSize:13,marginTop:4}}>Customize your nutrition targets</div>
         </div>
       </div>
@@ -1329,7 +1338,7 @@ function CalibrationScreen({onComplete,onSkip,existingProfile}){
           <circle cx="32" cy="32" r="10" stroke="rgba(251,191,36,0.6)" strokeWidth="2.5" strokeLinecap="round"
             strokeDasharray="42 20" strokeDashoffset="20"/>
         </svg>
-        <div style={{color:"#FFFFFF",fontSize:30,fontWeight:700,textAlign:"center",letterSpacing:"-0.5px",lineHeight:1.2,marginBottom:14}}>
+        <div style={{color:C.textPrimary,fontSize:30,fontWeight:700,textAlign:"center",letterSpacing:"-0.5px",lineHeight:1.2,marginBottom:14}}>
           Know exactly what<br/>you're eating.
         </div>
         <div style={{color:"rgba(255,255,255,0.4)",fontSize:14,lineHeight:1.7,textAlign:"center",maxWidth:280}}>
@@ -1347,7 +1356,7 @@ function CalibrationScreen({onComplete,onSkip,existingProfile}){
               <span style={{color:"#3ECF8E",fontSize:10,fontWeight:700}}>{n}</span>
             </div>
             <div>
-              <div style={{color:"#FFFFFF",fontSize:14,fontWeight:600,letterSpacing:"-0.1px",marginBottom:2}}>{title}</div>
+              <div style={{color:C.textPrimary,fontSize:14,fontWeight:600,letterSpacing:"-0.1px",marginBottom:2}}>{title}</div>
               <div style={{color:"rgba(255,255,255,0.3)",fontSize:12,lineHeight:1.5}}>{desc}</div>
             </div>
           </div>
@@ -1387,7 +1396,7 @@ function CalibrationScreen({onComplete,onSkip,existingProfile}){
           <path d="M8 18l7 7L28 11" stroke="#3ECF8E" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </div>
-      <div style={{color:"#FFFFFF",fontSize:26,fontWeight:700,letterSpacing:"-0.5px",marginBottom:10}}>You're calibrated.</div>
+      <div style={{color:C.textPrimary,fontSize:26,fontWeight:700,letterSpacing:"-0.5px",marginBottom:10}}>You're calibrated.</div>
       <div style={{color:"rgba(255,255,255,0.4)",fontSize:14,textAlign:"center",lineHeight:1.7,marginBottom:8}}>
         Palm: {result?.palm_width_inches}" wide × {result?.palm_length_inches}" long
       </div>
@@ -2272,7 +2281,7 @@ function App() {
                 strokeDasharray='48 22' strokeDashoffset='22' style={{animation:'spinRing 2s linear infinite 0.8s',transformOrigin:'36px 36px'}}/>
             </svg>
             <div>
-              <p style={{color:'#FFFFFF',fontSize:22,fontWeight:700,letterSpacing:'-0.5px',margin:0}}>nouri</p>
+              <p style={{color:C.textPrimary,fontSize:22,fontWeight:700,letterSpacing:'-0.5px',margin:0}}>nouri</p>
               <p style={{color:'rgba(255,255,255,0.2)',fontSize:11,margin:'4px 0 0',letterSpacing:'0.3px'}}>Loading...</p>
             </div>
           </>
@@ -2282,7 +2291,7 @@ function App() {
               <span style={{fontSize:32}}>⚠️</span>
             </div>
             <div>
-              <p style={{color:'#FFFFFF',fontSize:22,fontWeight:700,letterSpacing:'-0.5px',margin:0}}>nouri</p>
+              <p style={{color:C.textPrimary,fontSize:22,fontWeight:700,letterSpacing:'-0.5px',margin:0}}>nouri</p>
               <p style={{color:'rgba(255,100,100,0.9)',fontSize:13,margin:'12px 0 0',lineHeight:1.5,maxWidth:280,textAlign:'center'}}>{initError}</p>
             </div>
             <button onClick={runInit} style={{marginTop:8,padding:'12px 24px',background:'linear-gradient(135deg,#3ECF8E,#2BA874)',border:'none',borderRadius:12,color:'#000',fontSize:14,fontWeight:600,cursor:'pointer',touchAction:'manipulation'}}>Try again</button>
